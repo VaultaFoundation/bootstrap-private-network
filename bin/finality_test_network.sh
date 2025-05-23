@@ -20,11 +20,12 @@ COMMAND=${1:-"NA"}
 ROOT_DIR="/bigata1/savanna"
 LOG_DIR="/bigata1/log"
 WALLET_DIR=${HOME}/eosio-wallet
-CONTRACT_DIR="/local/eosnetworkfoundation/repos/eos-system-contracts/build/contracts"
+CONTRACT_DIR="/local/VaultaFoundation/repos/system-contracts/build/contracts"
+VALUTA_CONTRACT_DIR="/local/VaultaFoundation/repos/vaulta-system-contracts/build/contracts"
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
-GENESIS_FILE="/local/eosnetworkfoundation/repos/bootstrap-private-network/config/genesis.json"
-CONFIG_FILE="/local/eosnetworkfoundation/repos/bootstrap-private-network/config/config.ini"
-LOGGING_JSON="/local/eosnetworkfoundation/repos/bootstrap-private-network/config/logging.json"
+GENESIS_FILE="/local/VaultaFoundation/repos/bootstrap-private-network/config/genesis.json"
+CONFIG_FILE="/local/VaultaFoundation/repos/bootstrap-private-network/config/config.ini"
+LOGGING_JSON="/local/VaultaFoundation/repos/bootstrap-private-network/config/logging.json"
 
 ######
 # Stop Function to shutdown all nodes
@@ -114,6 +115,8 @@ start_func() {
     # create accounts, activate protocols, create tokens, set system contracts
     sleep 1
     "$SCRIPT_DIR"/boot_actions.sh "$ENDPOINT" "$CONTRACT_DIR" "$EOS_ROOT_PUBLIC_KEY"
+    sleep 1
+    "$SCRIPT_DIR"/initalize_A_tokens.sh "$ENDPOINT_ONE" "$VAULTA_CONTRACT_DIR" "$WALLET_DIR" "$SCRIPT_DIR"
     "$SCRIPT_DIR"/add_time_func.sh "$ENDPOINT" 
     sleep 1
     # create producer and user accounts, stake EOS
@@ -121,6 +124,8 @@ start_func() {
     sleep 1
     # register producers and users vote for producers
     "$SCRIPT_DIR"/block_producer_setup.sh "$ENDPOINT" "$WALLET_DIR"
+    # update active permisions for eosio and core.vaulta account
+    "$SCRIPT_DIR"/set_authorities.sh "$ENDPOINT" "$SCRIPT_DIR" "$WALLET_DIR"
     # need a long sleep here to allow time for new production schedule to settle
     echo "please wait 5 seconds while we wait for new producer schedule to settle"
     sleep 5

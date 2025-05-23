@@ -13,7 +13,7 @@ TUID=$(id -ur)
 if [ "$TUID" -eq 0 ]; then
   echo "running as root"
 
-  ROOT_DIR=/local/eosnetworkfoundation
+  ROOT_DIR=/local/VaultaFoundation
   SPRING_BUILD_DIR="${ROOT_DIR}"/spring_build
   CDT_BUILD_DIR="${ROOT_DIR}"/repos/cdt/build
 
