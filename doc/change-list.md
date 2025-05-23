@@ -7,4 +7,4 @@
 - May 23rd 2024: Spring Beta-1.2 Release [Change List](/changes/May232024.md)
 - Jan 24th 2025: Spring 1.0.4 Release [Change List](/changes/Jan242025.md)
 - Feb 24th 2025: Spring 1.1.1 Release [Change List](/changes/Feb242025.md)
-
+- May 22nd 2025: Spring 1.1.5 Release Update to A Token

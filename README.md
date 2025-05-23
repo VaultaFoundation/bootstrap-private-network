@@ -44,11 +44,11 @@ See [Step By Step](doc/step-by-step.md)
 Changes for larger [multi-host production systems](doc/large-scale-setup.md)
 
 ## Versions of this Repo
-Listing of [Versions](doc/change-list.md) between releases of this bootstrap repo across Antelope software. See [Latest Change Log](changes/Jan242025.md) for PRs between releases.
+Listing of [Versions](doc/change-list.md) between releases of this bootstrap repo across Antelope software. See [Latest Change Log](changes/May222025.md).
 
 
 ## Frequently Asked Questions
-Q: Why is nodeos version `v1.0.4`?
+Q: Why is nodeos version `v1.1.5`?
 A: The version was reset to `v1` with the new launch of Spring.
 
 Q: How do I free up more disk space?

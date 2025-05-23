@@ -3,7 +3,7 @@
 ENDPOINT_ONE=$1
 WALLET_DIR=$2
 
-# create 21 producers error out if vars not set
+# create 3 producers error out if vars not set
 for producer_name in bpa bpb bpc
 do
     [ ! -s "$WALLET_DIR/${producer_name}.keys" ] && cleos create key --to-console > "$WALLET_DIR/${producer_name}.keys"
@@ -13,7 +13,7 @@ do
     cleos wallet import --name finality-test-network-wallet --private-key $PRIVATE_KEY
 
     # register producer
-    cleos --url $ENDPOINT_ONE system regproducer ${producer_name} ${PUBLIC_KEY}
+    cleos --url "$ENDPOINT_ONE" system regproducer "${producer_name}" "${PUBLIC_KEY}"
 done
 
 # create user keys
@@ -29,36 +29,3 @@ do
   # vote
   cleos --url $ENDPOINT_ONE system voteproducer prods ${user_name} bpa bpb bpc
 done
-
-# delegate active permissions
-cat > $HOME/required_auth.json << EOF
-{
-  "threshold": 3,
-  "keys": [],
-  "accounts": [
-    {
-      "permission": {
-        "actor": "bpa",
-        "permission": "active"
-      },
-      "weight": 1
-    },
-    {
-      "permission": {
-        "actor": "bpb",
-        "permission": "active"
-      },
-      "weight": 1
-    },
-    {
-      "permission": {
-        "actor": "bpc",
-        "permission": "active"
-      },
-      "weight": 1
-    }
-  ],
-  "waits": []
-}
-EOF
-cleos  --url $ENDPOINT_ONE set account permission eosio active $HOME/required_auth.json

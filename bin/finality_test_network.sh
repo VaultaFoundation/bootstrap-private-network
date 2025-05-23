@@ -20,11 +20,12 @@ COMMAND=${1:-"NA"}
 ROOT_DIR="/bigata1/savanna"
 LOG_DIR="/bigata1/log"
 WALLET_DIR=${HOME}/eosio-wallet
-CONTRACT_DIR="/local/eosnetworkfoundation/repos/eos-system-contracts/build/contracts"
+CONTRACT_DIR="/local/VaultaFoundation/repos/system-contracts/build/contracts"
+VALUTA_CONTRACT_DIR="/local/VaultaFoundation/repos/vaulta-system-contracts/build/contracts"
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
-GENESIS_FILE="/local/eosnetworkfoundation/repos/bootstrap-private-network/config/genesis.json"
-CONFIG_FILE="/local/eosnetworkfoundation/repos/bootstrap-private-network/config/config.ini"
-LOGGING_JSON="/local/eosnetworkfoundation/repos/bootstrap-private-network/config/logging.json"
+GENESIS_FILE="/local/VaultaFoundation/repos/bootstrap-private-network/config/genesis.json"
+CONFIG_FILE="/local/VaultaFoundation/repos/bootstrap-private-network/config/config.ini"
+LOGGING_JSON="/local/VaultaFoundation/repos/bootstrap-private-network/config/logging.json"
 
 ######
 # Stop Function to shutdown all nodes
@@ -114,6 +115,8 @@ start_func() {
     # create accounts, activate protocols, create tokens, set system contracts
     sleep 1
     "$SCRIPT_DIR"/boot_actions.sh "$ENDPOINT" "$CONTRACT_DIR" "$EOS_ROOT_PUBLIC_KEY"
+    sleep 1
+    "$SCRIPT_DIR"/initalize_A_tokens.sh "$ENDPOINT_ONE" "$VAULTA_CONTRACT_DIR" "$WALLET_DIR" "$SCRIPT_DIR"
     "$SCRIPT_DIR"/add_time_func.sh "$ENDPOINT" 
     sleep 1
     # create producer and user accounts, stake EOS
@@ -121,6 +124,8 @@ start_func() {
     sleep 1
     # register producers and users vote for producers
     "$SCRIPT_DIR"/block_producer_setup.sh "$ENDPOINT" "$WALLET_DIR"
+    # update active permisions for eosio and core.vaulta account
+    "$SCRIPT_DIR"/set_authorities.sh "$ENDPOINT" "$SCRIPT_DIR" "$WALLET_DIR"
     # need a long sleep here to allow time for new production schedule to settle
     echo "please wait 5 seconds while we wait for new producer schedule to settle"
     sleep 5
@@ -208,33 +213,10 @@ start_func() {
 }
 ## end START/CREATE COMMAND
 
-echo "STARTING COMMAND ${COMMAND}"
-
-if [ "$COMMAND" == "NA" ]; then
-  echo "usage: finality_test_network.sh [CREATE|START|CLEAN|STOP|SAVANNA]"
-  exit 1
-fi
-
-if [ "$COMMAND" == "CLEAN" ]; then
-    for d in nodeos-one nodeos-two nodeos-three; do
-        [ -f "$ROOT_DIR"/${d}/data/blocks/blocks.log ] && rm -f "$ROOT_DIR"/${d}/data/blocks/blocks.log
-        [ -f "$ROOT_DIR"/${d}/data/blocks/blocks.index ] && rm -f "$ROOT_DIR"/${d}/data/blocks/blocks.index
-        [ -f "$ROOT_DIR"/${d}/data/state/shared_memory.bin ] && rm -f "$ROOT_DIR"/${d}/data/state/shared_memory.bin
-        [ -f "$ROOT_DIR"/${d}/data/state/code_cache.bin ] && rm -f "$ROOT_DIR"/${d}/data/state/code_cache.bin
-        [ -f "$ROOT_DIR"/${d}/data/state/chain_head.dat ] && rm -f "$ROOT_DIR"/${d}/data/state/chain_head.dat
-        [ -f "$ROOT_DIR"/${d}/data/blocks/reversible/fork_db.dat ] && rm -f "$ROOT_DIR"/${d}/data/blocks/reversible/fork_db.dat
-    done
-fi
-
-if [ "$COMMAND" == "CREATE" ] || [ "$COMMAND" == "START" ]; then
-  start_func $COMMAND
-fi
-
-if [ "$COMMAND" == "STOP" ]; then
-  stop_func
-fi
-
-if [ "$COMMAND" == "SAVANNA" ]; then
+#####
+# ACTIVATE SAVANNA Function to align all the nodes
+####
+activate_savanna_func() {
   # get config information
   NODEOS_ONE_PORT=8888
   ENDPOINT="http://127.0.0.1:${NODEOS_ONE_PORT}"
@@ -270,6 +252,37 @@ if [ "$COMMAND" == "SAVANNA" ]; then
   sleep 30
   grep 'Transitioning to savanna' "$LOG_DIR"/nodeos-one.log
   grep 'Transition to instant finality' "$LOG_DIR"/nodeos-one.log
+}
+### END ACTIVATE SAVANNA FUNCTION 
+
+echo "STARTING COMMAND ${COMMAND}"
+
+if [ "$COMMAND" == "NA" ]; then
+  echo "usage: finality_test_network.sh [CREATE|START|CLEAN|STOP|SAVANNA]"
+  exit 1
+fi
+
+if [ "$COMMAND" == "CLEAN" ]; then
+    for d in nodeos-one nodeos-two nodeos-three; do
+        [ -f "$ROOT_DIR"/${d}/data/blocks/blocks.log ] && rm -f "$ROOT_DIR"/${d}/data/blocks/blocks.log
+        [ -f "$ROOT_DIR"/${d}/data/blocks/blocks.index ] && rm -f "$ROOT_DIR"/${d}/data/blocks/blocks.index
+        [ -f "$ROOT_DIR"/${d}/data/state/shared_memory.bin ] && rm -f "$ROOT_DIR"/${d}/data/state/shared_memory.bin
+        [ -f "$ROOT_DIR"/${d}/data/state/code_cache.bin ] && rm -f "$ROOT_DIR"/${d}/data/state/code_cache.bin
+        [ -f "$ROOT_DIR"/${d}/data/state/chain_head.dat ] && rm -f "$ROOT_DIR"/${d}/data/state/chain_head.dat
+        [ -f "$ROOT_DIR"/${d}/data/blocks/reversible/fork_db.dat ] && rm -f "$ROOT_DIR"/${d}/data/blocks/reversible/fork_db.dat
+    done
+fi
+
+if [ "$COMMAND" == "CREATE" ] || [ "$COMMAND" == "START" ]; then
+  start_func $COMMAND
+  if [ "$COMMAND" == "START" ]; then
+    sleep 1
+    activate_savanna_func
+  fi
+fi
+
+if [ "$COMMAND" == "STOP" ]; then
+  stop_func
 fi
 
 if [ "$COMMAND" == "BACKUP" ]; then

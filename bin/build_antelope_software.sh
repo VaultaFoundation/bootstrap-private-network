@@ -6,9 +6,9 @@
 # called from Docker Build
 ###
 
-SPRING_GIT_COMMIT_TAG=${1:-v1.1.1}
+SPRING_GIT_COMMIT_TAG=${1:-v1.1.5}
 CDT_GIT_COMMIT_TAG=${2:-v4.1.0}
-NPROC=${3:-$(nproc)}
+let NPROC=$(nproc)/6
 TUID=$(id -ur)
 
 # must not be root to run
@@ -17,7 +17,7 @@ if [ "$TUID" -eq 0 ]; then
   exit
 fi
 
-ROOT_DIR=/local/eosnetworkfoundation
+ROOT_DIR=/local/VaultaFoundation
 SPRING_GIT_DIR="${ROOT_DIR}"/repos/spring
 SPRING_BUILD_DIR="${ROOT_DIR}"/spring_build
 LOG_DIR=/bigata1/log

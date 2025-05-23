@@ -29,9 +29,11 @@ cleos --url $ENDPOINT create account eosio eosio.reserv $PUBLIC_KEY
 cleos --url $ENDPOINT create account eosio eosio.time $PUBLIC_KEY
 cleos --url $ENDPOINT create account eosio enf $PUBLIC_KEY
 
+cleos --url $ENDPOINT create account eosio vaulta $PUBLIC_KEY
+
 cleos --url $ENDPOINT set contract eosio.token "$CONTRACT_DIR"/eosio.token/
-cleos --url $ENDPOINT push action eosio.token create '[ "eosio", "380000000.0000 EOS" ]' -p eosio.token@active
-cleos --url $ENDPOINT push action eosio.token issue '[ "eosio", "380000000.0000 EOS", "initial issuance" ]' -p eosio
+cleos --url $ENDPOINT push action eosio.token create '[ "eosio", "2100000000.0000 EOS" ]' -p eosio.token@active
+cleos --url $ENDPOINT push action eosio.token issue '[ "eosio", "2100000000.0000 EOS", "initial issuance" ]' -p eosio
 cleos --url $ENDPOINT set contract eosio.msig "$CONTRACT_DIR"/eosio.msig
 cleos --url $ENDPOINT set contract eosio "$CONTRACT_DIR"/eosio.wrap
 
@@ -91,3 +93,5 @@ cleos --url $ENDPOINT push action eosio setpriv '["eosio.msig", 1]' -p eosio@act
 sleep 1
 # little test that everything has been setup correctly
 cleos --url $ENDPOINT system buyram eosio eosio "1000 EOS"
+# vaulta contracts go here 
+

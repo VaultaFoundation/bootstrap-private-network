@@ -39,5 +39,5 @@ do
   # get some spending money
   cleos --url $ENDPOINT_ONE transfer eosio ${user_name} "11540000 EOS" "init funding"
   # stake 1154K EOS x26 accounts = 300,004,000 EOS Total Staked
-  cleos --url $ENDPOINT_ONE system delegatebw ${user_name} ${user_name} "5770000.000 EOS" "5770000.0000 EOS"
+  cleos --url $ENDPOINT_ONE system delegatebw ${user_name} ${user_name} "320000000.000 EOS" "320000000.0000 EOS"
 done

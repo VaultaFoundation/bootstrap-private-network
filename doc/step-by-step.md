@@ -17,7 +17,7 @@ These Git Commit Hashes or Tags are current to the following date.
 https://github.com/eosnetworkfoundation/bootstrap-private-network/blob/6253aea3de0ea4b2c4cbf7e24b8723ca7b655643/bin/docker-build-image.sh#L17
 
 ### Branches
-- Spring: branch `release/1.0-beta4` repo `AntelopeIO/spring`
+- Spring: branch `release/1.1` repo `AntelopeIO/spring`
 - CDT: branch `release/4.1` repo `AntelopeIO/cdt`
 - Reference Contracts: branch `main` repo `AntelopeIO/reference-contracts`
 
@@ -27,7 +27,7 @@ https://github.com/eosnetworkfoundation/bootstrap-private-network/blob/6253aea3d
 ## Install Antelope Software
 Now that the binaries are build you need to add CDT and Spring to your path or install them into well know locations. The [Reference Install Script](/bin/install_antelope_software.sh) must be run as root and demonstrates one way to install the software.
 
-Note, the `Reference Contracts` are install later during the initialization of the EOS blockchain.
+Note, the `System Contracts` are install later during the initialization of the EOS blockchain.
 
 ## Initialize Block Chain
 Before we can start up our multi-producer blockchain a few preparations are needed.
