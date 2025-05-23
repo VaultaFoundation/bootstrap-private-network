@@ -1,7 +1,7 @@
 # Readme
 
 ## Purpose  
-The TLDR; Quickly set up Antelope Software and see Savanna working with near instant finality.
+The TLDR; Quickly set up Antelope Software and multi-node networking working with near instant finality (~1 sec).
 See [Use Cases](doc/use-cases-private-network.md) for background.
 
 ## Topology
@@ -23,20 +23,12 @@ graph LR;
 - Enter the Container
    - `./bin/docker-enter-container.sh`
 - Setup Antelope Network, run from inside the docker container
-   - `/local/eosnetworkfoundation/repos/bootstrap-private-network/bin/finality_test_network.sh CREATE`
-- See `last_irreversible_block_num` is many blocks behind `head_block_num`
-
-   - run `cleos get info` from inside the docker container
-
-The `last irreversible block` has been agreed to by the network, and can not be changed. This represents the last step in finalizing work across all the nodes. The head block has committed transactions that may be changed in the event of a bad actor, and error, or other synchronization issue.
-
-- Activate Savanna, run from inside the docker container
-   - `/local/eosnetworkfoundation/repos/bootstrap-private-network/bin/finality_test_network.sh SAVANNA`
+   - `/local/VaultaFoundation/repos/bootstrap-private-network/bin/finality_test_network.sh CREATE`
+- Start the network and activate Savanna protocol 
+   - `/local/VaultaFoundation/repos/bootstrap-private-network/bin/finality_test_network.sh START`
 - See Last Irreversible Block is *-->three<--* block behind Head Block
 
    - run `cleos get info` from inside the docker container
-
-The new algorithm is finalizing blocks faster. Even as producers scale up the SAVANNA algorithm will maintain the same 3 block delta between the `last_irreversible_block_num` and the `head_block_num`.
 
 ## Step By Step Documentation
 See [Step By Step](doc/step-by-step.md)
