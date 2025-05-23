@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 WALLET_DIR=${HOME}/eosio-wallet
-BUILD_TEST_DIR=/local/eosnetworkfoundation/spring_build/tests
+BUILD_TEST_DIR=/local/VaultaFoundation/spring_build/tests
 TRX_LOG_DIR=/bigata1/log/trx_generator
 
 HTTP_URL=${1}

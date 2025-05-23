@@ -7,7 +7,7 @@ There is a missing step to copy the Spring deb packages to all hosts. The Step b
 
 ## Configuration
 - Increase `chain-state-db-size-mb` in `config.ini` to production levels.
-- Add `database-map-mode = mapped_private` for better disk IO. See [Leap 5 performance testing](https://eosnetwork.com/blog/leap-5-performance-testing/). Need to make sure swap space is large enough to cover `chain-state-db-size-mb`.
+- Add `database-map-mode = mapped_private` for better disk IO. See [Leap 5 performance testing](https://eosnetwork.com/resources/leap-5-performance-testing/). Need to make sure swap space is large enough to cover `chain-state-db-size-mb`.
 - Decrease `max-transaction-time` significantly
 - Suggest secure connections, you may not want to allow `any` connections
 
