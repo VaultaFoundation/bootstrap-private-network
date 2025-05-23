@@ -213,33 +213,10 @@ start_func() {
 }
 ## end START/CREATE COMMAND
 
-echo "STARTING COMMAND ${COMMAND}"
-
-if [ "$COMMAND" == "NA" ]; then
-  echo "usage: finality_test_network.sh [CREATE|START|CLEAN|STOP|SAVANNA]"
-  exit 1
-fi
-
-if [ "$COMMAND" == "CLEAN" ]; then
-    for d in nodeos-one nodeos-two nodeos-three; do
-        [ -f "$ROOT_DIR"/${d}/data/blocks/blocks.log ] && rm -f "$ROOT_DIR"/${d}/data/blocks/blocks.log
-        [ -f "$ROOT_DIR"/${d}/data/blocks/blocks.index ] && rm -f "$ROOT_DIR"/${d}/data/blocks/blocks.index
-        [ -f "$ROOT_DIR"/${d}/data/state/shared_memory.bin ] && rm -f "$ROOT_DIR"/${d}/data/state/shared_memory.bin
-        [ -f "$ROOT_DIR"/${d}/data/state/code_cache.bin ] && rm -f "$ROOT_DIR"/${d}/data/state/code_cache.bin
-        [ -f "$ROOT_DIR"/${d}/data/state/chain_head.dat ] && rm -f "$ROOT_DIR"/${d}/data/state/chain_head.dat
-        [ -f "$ROOT_DIR"/${d}/data/blocks/reversible/fork_db.dat ] && rm -f "$ROOT_DIR"/${d}/data/blocks/reversible/fork_db.dat
-    done
-fi
-
-if [ "$COMMAND" == "CREATE" ] || [ "$COMMAND" == "START" ]; then
-  start_func $COMMAND
-fi
-
-if [ "$COMMAND" == "STOP" ]; then
-  stop_func
-fi
-
-if [ "$COMMAND" == "SAVANNA" ]; then
+#####
+# ACTIVATE SAVANNA Function to align all the nodes
+####
+activate_savanna_func() {
   # get config information
   NODEOS_ONE_PORT=8888
   ENDPOINT="http://127.0.0.1:${NODEOS_ONE_PORT}"
@@ -275,6 +252,37 @@ if [ "$COMMAND" == "SAVANNA" ]; then
   sleep 30
   grep 'Transitioning to savanna' "$LOG_DIR"/nodeos-one.log
   grep 'Transition to instant finality' "$LOG_DIR"/nodeos-one.log
+}
+### END ACTIVATE SAVANNA FUNCTION 
+
+echo "STARTING COMMAND ${COMMAND}"
+
+if [ "$COMMAND" == "NA" ]; then
+  echo "usage: finality_test_network.sh [CREATE|START|CLEAN|STOP|SAVANNA]"
+  exit 1
+fi
+
+if [ "$COMMAND" == "CLEAN" ]; then
+    for d in nodeos-one nodeos-two nodeos-three; do
+        [ -f "$ROOT_DIR"/${d}/data/blocks/blocks.log ] && rm -f "$ROOT_DIR"/${d}/data/blocks/blocks.log
+        [ -f "$ROOT_DIR"/${d}/data/blocks/blocks.index ] && rm -f "$ROOT_DIR"/${d}/data/blocks/blocks.index
+        [ -f "$ROOT_DIR"/${d}/data/state/shared_memory.bin ] && rm -f "$ROOT_DIR"/${d}/data/state/shared_memory.bin
+        [ -f "$ROOT_DIR"/${d}/data/state/code_cache.bin ] && rm -f "$ROOT_DIR"/${d}/data/state/code_cache.bin
+        [ -f "$ROOT_DIR"/${d}/data/state/chain_head.dat ] && rm -f "$ROOT_DIR"/${d}/data/state/chain_head.dat
+        [ -f "$ROOT_DIR"/${d}/data/blocks/reversible/fork_db.dat ] && rm -f "$ROOT_DIR"/${d}/data/blocks/reversible/fork_db.dat
+    done
+fi
+
+if [ "$COMMAND" == "CREATE" ] || [ "$COMMAND" == "START" ]; then
+  start_func $COMMAND
+  if [ "$COMMAND" == "START" ]; then
+    sleep 1
+    activate_savanna_func
+  fi
+fi
+
+if [ "$COMMAND" == "STOP" ]; then
+  stop_func
 fi
 
 if [ "$COMMAND" == "BACKUP" ]; then
