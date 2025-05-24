@@ -116,7 +116,7 @@ start_func() {
     sleep 1
     "$SCRIPT_DIR"/boot_actions.sh "$ENDPOINT" "$CONTRACT_DIR" "$EOS_ROOT_PUBLIC_KEY"
     sleep 1
-    "$SCRIPT_DIR"/initalize_A_tokens.sh "$ENDPOINT_ONE" "$VAULTA_CONTRACT_DIR" "$WALLET_DIR" "$SCRIPT_DIR"
+    "$SCRIPT_DIR"/initalize_A_tokens.sh "$ENDPOINT" "$VAULTA_CONTRACT_DIR" "$WALLET_DIR" "$SCRIPT_DIR"
     "$SCRIPT_DIR"/add_time_func.sh "$ENDPOINT" 
     sleep 1
     # create producer and user accounts, stake EOS
