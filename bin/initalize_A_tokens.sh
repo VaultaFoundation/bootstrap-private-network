@@ -36,7 +36,7 @@ cleos -u $ENDPOINT_ONE push action eosio setpriv '["core.vaulta", 1]' -p eosio@a
 
 # SET NEW ABI and SET NEW CODE for Wrapper Contracts and swapto
 # https://github.com/VaultaFoundation/vaulta-system-contract
-cleos -u $ENDPOINT_ONE set contract core.vaulta ${CONTRACT_DIR} system.wasm system.abi -p core.vaulta@active
+cleos -u $ENDPOINT_ONE set contract core.vaulta ${VAULTA_CONTRACT_DIR} system.wasm system.abi -p core.vaulta@active
 
 # Initalize to same amount of EOS 
 cleos -u $ENDPOINT_ONE push action core.vaulta init '["2100000000.0000 A"]' -p core.vaulta@active
