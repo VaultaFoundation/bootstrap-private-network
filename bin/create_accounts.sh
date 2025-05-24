@@ -34,10 +34,9 @@ for user_name in usera userb userc userd usere userf userg userh useri userj \
    userk userl userm usern usero userp userq userr users usert useru \
    userv userw userx usery userz
 do
-  # create user account
-  cleos --url $ENDPOINT_ONE system newaccount eosio ${user_name:?} ${USER_PUBLIC_KEY:?} --stake-net "50 EOS" --stake-cpu "50 EOS" --buy-ram "100 EOS"
   # get some spending money
-  cleos --url $ENDPOINT_ONE transfer eosio ${user_name} "11540000 EOS" "init funding"
-  # stake 1154K EOS x26 accounts = 300,004,000 EOS Total Staked
-  cleos --url $ENDPOINT_ONE system delegatebw ${user_name} ${user_name} "320000000.000 EOS" "320000000.0000 EOS"
+  cleos --url $ENDPOINT_ONE transfer eosio ${user_name} "30000000 EOS" "init funding"
+  # create user account
+  cleos --url $ENDPOINT_ONE system newaccount eosio ${user_name:?} ${USER_PUBLIC_KEY:?} --stake-net "7500000 EOS" --stake-cpu "7500000 EOS" --buy-ram "7500000 EOS"
+  cleos --url $ENDPOINT_ONE system delegatebw ${user_name} ${user_name} "10000.000 EOS" "10000.0000 EOS"
 done
