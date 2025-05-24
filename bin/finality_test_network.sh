@@ -21,7 +21,7 @@ ROOT_DIR="/bigata1/savanna"
 LOG_DIR="/bigata1/log"
 WALLET_DIR=${HOME}/eosio-wallet
 CONTRACT_DIR="/local/VaultaFoundation/repos/system-contracts/build/contracts"
-VALUTA_CONTRACT_DIR="/local/VaultaFoundation/repos/vaulta-system-contracts/build/contracts"
+VALUTA_CONTRACT_DIR="/local/VaultaFoundation/repos/vaulta-system-contract/build/contracts"
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 GENESIS_FILE="/local/VaultaFoundation/repos/bootstrap-private-network/config/genesis.json"
 CONFIG_FILE="/local/VaultaFoundation/repos/bootstrap-private-network/config/config.ini"
@@ -116,7 +116,7 @@ start_func() {
     sleep 1
     "$SCRIPT_DIR"/boot_actions.sh "$ENDPOINT" "$CONTRACT_DIR" "$EOS_ROOT_PUBLIC_KEY"
     sleep 1
-    "$SCRIPT_DIR"/initalize_A_tokens.sh "$ENDPOINT" "$VAULTA_CONTRACT_DIR" "$WALLET_DIR" "$SCRIPT_DIR"
+    "$SCRIPT_DIR"/initalize_A_tokens.sh "$ENDPOINT" "$VALUTA_CONTRACT_DIR" "$WALLET_DIR" "$SCRIPT_DIR"
     "$SCRIPT_DIR"/add_time_func.sh "$ENDPOINT" 
     sleep 1
     # create producer and user accounts, stake EOS
