@@ -217,10 +217,6 @@ start_func() {
 # ACTIVATE SAVANNA Function to align all the nodes
 ####
 activate_savanna_func() {
-  # get config information
-  NODEOS_ONE_PORT=8888
-  ENDPOINT="http://127.0.0.1:${NODEOS_ONE_PORT}"
-
   echo "creating new finalizer BLS keys"
   PUBLIC_KEY=()
   PROOF_POSSESION=()

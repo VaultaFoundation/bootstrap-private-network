@@ -7,7 +7,7 @@ cleos --url $ENDPOINT_ONE transfer eosio enf "10000 EOS" "init funding"
 cleos --url $ENDPOINT_ONE system buyram eosio enf "1000 EOS"
 
 # create 21 producers error out if vars not set
-for producer_name in bpa bpb bpc core.vaulta null.vaulta
+for producer_name in bpa bpb bpc null.vaulta
 do
     [ ! -s "$WALLET_DIR/${producer_name}.keys" ] && cleos create key --to-console > "$WALLET_DIR/${producer_name}.keys"
     # head because we want the first match; they may be multiple keys
@@ -16,7 +16,7 @@ do
     cleos wallet import --name finality-test-network-wallet --private-key $PRIVATE_KEY
 
     # 400 staked per producer x21 = 8400 EOS staked total
-    cleos --url $ENDPOINT_ONE system newaccount eosio ${producer_name:?} ${PUBLIC_KEY:?} --stake-net "500 EOS" --stake-cpu "500 EOS" --buy-ram "1000 EOS"
+    cleos --url $ENDPOINT_ONE system newaccount eosio ${producer_name:?} ${PUBLIC_KEY:?} --stake-net "50 EOS" --stake-cpu "500 EOS" --buy-ram "1000 EOS"
     # get some spending money
     cleos --url $ENDPOINT_ONE transfer eosio ${producer_name} "10000 EOS" "init funding"
     # self stake some net and cpu
@@ -36,9 +36,9 @@ for user_name in usera userb userc userd usere userf userg userh useri userj \
    userv userw userx usery userz
 do
   # create user account
-  cleos --url $ENDPOINT_ONE system newaccount eosio ${user_name:?} ${USER_PUBLIC_KEY:?} --stake-net "7000000 EOS" --stake-cpu "7000000 EOS" --buy-ram "7000000 EOS"
+  cleos --url $ENDPOINT_ONE system newaccount eosio ${user_name:?} ${USER_PUBLIC_KEY:?} --stake-net "50 EOS" --stake-cpu "50 EOS" --buy-ram "100 EOS"
   # get some spending money
-  cleos --url $ENDPOINT_ONE transfer eosio ${user_name} "1000 EOS" "init funding"
-  # stake 730,770 EOS x26 accounts = 19,000,020 EOS Total Staked
-  cleos --url $ENDPOINT_ONE system delegatebw ${user_name} ${user_name} "730770.000 EOS" "730770.0000 EOS"
+  cleos --url $ENDPOINT_ONE transfer eosio ${user_name} "65423000 EOS" "init funding"
+  # stake 65,423,000 EOS x26 accounts = 1,700,998,000 EOS Total Staked 80.99% of 2.1B total funds
+  cleos --url $ENDPOINT_ONE system delegatebw ${user_name} ${user_name} "32711500.0000 EOS" "32711500.0000 EOS"
 done

@@ -15,7 +15,7 @@ SCRIPT_DIR=$4
 "$SCRIPT_DIR"/open_wallet.sh "$WALLET_DIR"
 
 # Fund vaulta and add ram
-cleos --url $ENDPOINT_ONE transfer eosio vaulta "1000 EOS" "init funding"
+cleos --url $ENDPOINT_ONE transfer eosio vaulta "20000 EOS" "init funding"
 cleos --url $ENDPOINT_ONE system buyram eosio vaulta "100 EOS"
 
 # create the keys
@@ -26,7 +26,7 @@ VAULTA_PRIVATE_KEY=$(grep Private "${WALLET_DIR}"/core.vaulta.keys | head -1 | c
 # Import Core.Vaulta Private Key
 cleos wallet import --name finality-test-network-wallet --private-key $VAULTA_PRIVATE_KEY
 # Create User
-cleos -u $ENDPOINT_ONE system newaccount vaulta core.vaulta ${VAULTA_PUBLIC_KEY} ${VAULTA_PUBLIC_KEY} --stake-net "100.0 EOS" --stake-cpu "100.0 EOS" --buy-ram-kbytes 1000 -pvaulta@active
+cleos -u $ENDPOINT_ONE system newaccount vaulta core.vaulta ${VAULTA_PUBLIC_KEY} ${VAULTA_PUBLIC_KEY} --stake-net "5000.0 EOS" --stake-cpu "5000.0 EOS" --buy-ram-kbytes 4000 -pvaulta@active
 
 # set code priviledges  
 cleos -u $ENDPOINT_ONE set account permission core.vaulta active --add-code -pcore.vaulta@active
