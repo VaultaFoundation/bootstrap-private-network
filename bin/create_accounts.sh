@@ -7,7 +7,7 @@ cleos --url $ENDPOINT_ONE transfer eosio enf "10000 EOS" "init funding"
 cleos --url $ENDPOINT_ONE system buyram eosio enf "1000 EOS"
 
 # create 21 producers error out if vars not set
-for producer_name in bpa bpb bpc
+for producer_name in bpa bpb bpc core.vaulta null.vaulta
 do
     [ ! -s "$WALLET_DIR/${producer_name}.keys" ] && cleos create key --to-console > "$WALLET_DIR/${producer_name}.keys"
     # head because we want the first match; they may be multiple keys
@@ -23,6 +23,7 @@ do
     cleos --url $ENDPOINT_ONE system delegatebw ${producer_name} ${producer_name} "4000.0 EOS" "4000.0 EOS"
 done
 
+
 # create user keys
 [ ! -s "$WALLET_DIR/user.keys" ] && cleos create key --to-console > "$WALLET_DIR/user.keys"
 # head because we want the first match; they may be multiple keys
@@ -35,8 +36,9 @@ for user_name in usera userb userc userd usere userf userg userh useri userj \
    userv userw userx usery userz
 do
   # create user account
-  cleos --url $ENDPOINT_ONE system newaccount eosio ${user_name:?} ${USER_PUBLIC_KEY:?} --stake-net "7500000 EOS" --stake-cpu "7500000 EOS" --buy-ram "7500000 EOS"
+  cleos --url $ENDPOINT_ONE system newaccount eosio ${user_name:?} ${USER_PUBLIC_KEY:?} --stake-net "7000000 EOS" --stake-cpu "7000000 EOS" --buy-ram "7000000 EOS"
   # get some spending money
-  cleos --url $ENDPOINT_ONE transfer eosio ${user_name} "30000000 EOS" "init funding"
-  cleos --url $ENDPOINT_ONE system delegatebw ${user_name} ${user_name} "14000000.000 EOS" "14000000.0000 EOS"
+  cleos --url $ENDPOINT_ONE transfer eosio ${user_name} "1000 EOS" "init funding"
+  # stake 730,770 EOS x26 accounts = 19,000,020 EOS Total Staked
+  cleos --url $ENDPOINT_ONE system delegatebw ${user_name} ${user_name} "730770.000 EOS" "730770.0000 EOS"
 done
