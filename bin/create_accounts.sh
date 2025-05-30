@@ -7,7 +7,7 @@ cleos --url $ENDPOINT_ONE transfer eosio enf "10000 EOS" "init funding"
 cleos --url $ENDPOINT_ONE system buyram eosio enf "1000 EOS"
 
 # create 21 producers error out if vars not set
-for producer_name in bpa bpb bpc null.vaulta
+for producer_name in bpa bpb bpc
 do
     [ ! -s "$WALLET_DIR/${producer_name}.keys" ] && cleos create key --to-console > "$WALLET_DIR/${producer_name}.keys"
     # head because we want the first match; they may be multiple keys

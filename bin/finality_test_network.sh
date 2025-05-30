@@ -146,7 +146,7 @@ start_func() {
   # BLS KEYS FOR FINALIZER
   BPA_BLS_PUB_KEY=$(grep Public "${WALLET_DIR}/bpa.finalizer.key" | cut -d: -f2 | sed 's/ //g')
   BPA_BLS_PRV_KEY=$(grep Private "${WALLET_DIR}/bpa.finalizer.key" | cut -d: -f2 | sed 's/ //g')
-  BPA_BLS_POS_KEY=$(grep Possession "${WALLET_DIR}/bpa.finalizer.key" | cut -d: -f2 | sed 's/ //g') 
+  BPA_BLS_POS=$(grep Possession "${WALLET_DIR}/bpa.finalizer.key" | cut -d: -f2 | sed 's/ //g') 
   # NODEOS COMMAND 
   nodeos --agent-name "Finality Test Node One" \
     --http-server-address 0.0.0.0:${NODEOS_ONE_PORT} \
@@ -170,7 +170,7 @@ start_func() {
   # BLS KEYS FOR FINALIZER
   BPB_BLS_PUB_KEY=$(grep Public "${WALLET_DIR}/bpb.finalizer.key" | cut -d: -f2 | sed 's/ //g')
   BPB_BLS_PRV_KEY=$(grep Private "${WALLET_DIR}/bpb.finalizer.key" | cut -d: -f2 | sed 's/ //g')
-  BPB_BLS_POS_KEY=$(grep Possession "${WALLET_DIR}/bpb.finalizer.key" | cut -d: -f2 | sed 's/ //g')
+  BPB_BLS_POS=$(grep Possession "${WALLET_DIR}/bpb.finalizer.key" | cut -d: -f2 | sed 's/ //g')
   # NODEOS COMMAND 
   if [ "$COMMAND" == "CREATE" ]; then
     nodeos --genesis-json ${ROOT_DIR}/genesis.json --agent-name "Finality Test Node Two" \
@@ -206,7 +206,7 @@ start_func() {
   # BLS KEYS FOR FINALIZER
   BPC_BLS_PUB_KEY=$(grep Public "${WALLET_DIR}/bpc.finalizer.key" | cut -d: -f2 | sed 's/ //g')
   BPC_BLS_PRV_KEY=$(grep Private "${WALLET_DIR}/bpc.finalizer.key" | cut -d: -f2 | sed 's/ //g')
-  BPC_BLS_POS_KEY=$(grep Possession "${WALLET_DIR}/bpc.finalizer.key" | cut -d: -f2 | sed 's/ //g')
+  BPC_BLS_POS=$(grep Possession "${WALLET_DIR}/bpc.finalizer.key" | cut -d: -f2 | sed 's/ //g')
   # NODEOS COMMAND 
   if [ "$COMMAND" == "CREATE" ]; then
     nodeos --genesis-json ${ROOT_DIR}/genesis.json --agent-name "Finality Test Node Three" \
@@ -237,15 +237,15 @@ start_func() {
   if [ ! -f $LOG_DIR/registered_bls_keys.txt ]; then 
     sleep 2
     "$SCRIPT_DIR"/open_wallet.sh "$WALLET_DIR"
-    # Now Register the Finalizer Keys On Each Node
-    # You could register these on any node
+    # Now Register the Finalizer Keys On Each Node You could register these on any node
+    # args: producer_name, bls_pub_key, bls_proof_of_posession
     # Simply call to `push action eosio regfinkey`
     "$SCRIPT_DIR"/register_bls_finalizer_key.sh http://127.0.0.1:${NODEOS_ONE_PORT} \
-              "$BPA_BLS_PUB_KEY" "$BPA_BLS_POS_KEY"
+              bpa "$BPA_BLS_PUB_KEY" "$BPA_BLS_POS"
     "$SCRIPT_DIR"/register_bls_finalizer_key.sh http://127.0.0.1:${NODEOS_TWO_PORT} \
-              "$BPB_BLS_PUB_KEY" "$BPB_BLS_POS_KEY"
+              bpb "$BPB_BLS_PUB_KEY" "$BPB_BLS_POS"
     "$SCRIPT_DIR"/register_bls_finalizer_key.sh http://127.0.0.1:${NODEOS_THREE_PORT} \
-              "$BPC_BLS_PUB_KEY" "$BPC_BLS_POS_KEY"
+              bpc "$BPC_BLS_PUB_KEY" "$BPC_BLS_POS"
     # record keys as registered 
     touch $LOG_DIR/registered_bls_keys.txt
   fi

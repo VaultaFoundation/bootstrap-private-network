@@ -14,7 +14,7 @@ PRIVATE_KEY=$(grep Private "$WALLET_DIR/null.vaulta.keys" | head -1 | cut -d: -f
 PUBLIC_KEY=$(grep Public "$WALLET_DIR/null.vaulta.keys" | head -1 | cut -d: -f2 | sed 's/ //g')
 cleos wallet import --name finality-test-network-wallet --private-key $PRIVATE_KEY
 
-cleos --url $ENDPOINT_ONE system newaccount eosio ${producer_name:?} ${PUBLIC_KEY:?} --stake-net "50 EOS" --stake-cpu "500 EOS" --buy-ram "1000 EOS"
+cleos --url $ENDPOINT_ONE system newaccount eosio null.vaulta ${PUBLIC_KEY:?} --stake-net "50 EOS" --stake-cpu "500 EOS" --buy-ram "1000 EOS"
 # get some spending money
 cleos --url $ENDPOINT_ONE transfer eosio null.vaulta "10000 EOS" "init funding"
 # self stake some net and cpu
