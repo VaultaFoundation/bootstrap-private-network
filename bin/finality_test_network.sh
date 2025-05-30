@@ -79,6 +79,7 @@ start_func() {
   for producer_name in bpa bpb bpc
   do
       [ ! -s "$WALLET_DIR/${producer_name}.keys" ] && cleos create key --to-console > "$WALLET_DIR/${producer_name}.keys"
+      spring-util bls create key --to-console > "${WALLET_DIR:?}"/"${producer_name}.finalizer.key"
   done
 
   # create initialize genesis file; create directories; copy cofigs into place
@@ -126,6 +127,8 @@ start_func() {
     "$SCRIPT_DIR"/block_producer_setup.sh "$ENDPOINT" "$WALLET_DIR"
     # update active permisions for eosio and core.vaulta account
     "$SCRIPT_DIR"/set_authorities.sh "$ENDPOINT" "$SCRIPT_DIR" "$WALLET_DIR"
+    # create null.vaulta user and noop contracts
+    "$SCRIPT_DIR"/noop_contract.sh "$ENDPOINT" "$WALLET_DIR" "$SCRIPT_DIR"
     # need a long sleep here to allow time for new production schedule to settle
     echo "please wait 5 seconds while we wait for new producer schedule to settle"
     sleep 5
@@ -137,14 +140,21 @@ start_func() {
   # if CREATE we bootstraped the node and killed it
   # if START we have no node running
   # either way we need to start Node One
+  # PRODUCER KEYS
   BPA_PRIVATE_KEY=$(grep Private "$WALLET_DIR/bpa.keys" | head -1 | cut -d: -f2 | sed 's/ //g')
   BPA_PUBLIC_KEY=$(grep Public "$WALLET_DIR/bpa.keys" | head -1 | cut -d: -f2 | sed 's/ //g')
+  # BLS KEYS FOR FINALIZER
+  BPA_BLS_PUB_KEY=$(grep Public "${WALLET_DIR}/bpa.finalizer.key" | cut -d: -f2 | sed 's/ //g')
+  BPA_BLS_PRV_KEY=$(grep Private "${WALLET_DIR}/bpa.finalizer.key" | cut -d: -f2 | sed 's/ //g')
+  BPA_BLS_POS_KEY=$(grep Possession "${WALLET_DIR}/bpa.finalizer.key" | cut -d: -f2 | sed 's/ //g') 
+  # NODEOS COMMAND 
   nodeos --agent-name "Finality Test Node One" \
     --http-server-address 0.0.0.0:${NODEOS_ONE_PORT} \
     --p2p-listen-endpoint 0.0.0.0:1444 \
     --enable-stale-production \
     --producer-name bpa \
     --signature-provider ${BPA_PUBLIC_KEY}=KEY:${BPA_PRIVATE_KEY} \
+    --signature-provider ${BPA_BLS_PUB_KEY}=KEY:${BPA_BLS_PRV_KEY} \
     --config "$ROOT_DIR"/config.ini \
     --data-dir "$ROOT_DIR"/nodeos-one/data \
     --p2p-peer-address 127.0.0.1:2444 \
@@ -154,8 +164,14 @@ start_func() {
   echo "please wait while we fire up the second node"
   sleep 2
 
+  # PRODUCER KEYS
   BPB_PRIVATE_KEY=$(grep Private "$WALLET_DIR/bpb.keys" | head -1 | cut -d: -f2 | sed 's/ //g')
   BPB_PUBLIC_KEY=$(grep Public "$WALLET_DIR/bpb.keys" | head -1 | cut -d: -f2 | sed 's/ //g')
+  # BLS KEYS FOR FINALIZER
+  BPB_BLS_PUB_KEY=$(grep Public "${WALLET_DIR}/bpb.finalizer.key" | cut -d: -f2 | sed 's/ //g')
+  BPB_BLS_PRV_KEY=$(grep Private "${WALLET_DIR}/bpb.finalizer.key" | cut -d: -f2 | sed 's/ //g')
+  BPB_BLS_POS_KEY=$(grep Possession "${WALLET_DIR}/bpb.finalizer.key" | cut -d: -f2 | sed 's/ //g')
+  # NODEOS COMMAND 
   if [ "$COMMAND" == "CREATE" ]; then
     nodeos --genesis-json ${ROOT_DIR}/genesis.json --agent-name "Finality Test Node Two" \
       --http-server-address 0.0.0.0:${NODEOS_TWO_PORT} \
@@ -163,6 +179,7 @@ start_func() {
       --enable-stale-production \
       --producer-name bpb \
       --signature-provider ${BPB_PUBLIC_KEY}=KEY:${BPB_PRIVATE_KEY} \
+      --signature-provider ${BPB_BLS_PUB_KEY}=KEY:${BPB_BLS_PRV_KEY} \
       --config "$ROOT_DIR"/config.ini \
       --data-dir "$ROOT_DIR"/nodeos-two/data \
       --p2p-peer-address 127.0.0.1:1444 \
@@ -174,6 +191,7 @@ start_func() {
       --enable-stale-production \
       --producer-name bpb \
       --signature-provider ${BPB_PUBLIC_KEY}=KEY:${BPB_PRIVATE_KEY} \
+      --signature-provider ${BPB_BLS_PUB_KEY}=KEY:${BPB_BLS_PRV_KEY} \
       --config "$ROOT_DIR"/config.ini \
       --data-dir "$ROOT_DIR"/nodeos-two/data \
       --p2p-peer-address 127.0.0.1:1444 \
@@ -182,8 +200,14 @@ start_func() {
   echo "please wait while we fire up the third node"
   sleep 5
 
+  # PRODUCER KEYS
   BPC_PRIVATE_KEY=$(grep Private "$WALLET_DIR/bpc.keys" | head -1 | cut -d: -f2 | sed 's/ //g')
   BPC_PUBLIC_KEY=$(grep Public "$WALLET_DIR/bpc.keys" | head -1 | cut -d: -f2 | sed 's/ //g')
+  # BLS KEYS FOR FINALIZER
+  BPC_BLS_PUB_KEY=$(grep Public "${WALLET_DIR}/bpc.finalizer.key" | cut -d: -f2 | sed 's/ //g')
+  BPC_BLS_PRV_KEY=$(grep Private "${WALLET_DIR}/bpc.finalizer.key" | cut -d: -f2 | sed 's/ //g')
+  BPC_BLS_POS_KEY=$(grep Possession "${WALLET_DIR}/bpc.finalizer.key" | cut -d: -f2 | sed 's/ //g')
+  # NODEOS COMMAND 
   if [ "$COMMAND" == "CREATE" ]; then
     nodeos --genesis-json ${ROOT_DIR}/genesis.json --agent-name "Finality Test Node Three" \
       --http-server-address 0.0.0.0:${NODEOS_THREE_PORT} \
@@ -191,6 +215,7 @@ start_func() {
       --enable-stale-production \
       --producer-name bpc \
       --signature-provider ${BPC_PUBLIC_KEY}=KEY:${BPC_PRIVATE_KEY} \
+      --signature-provider ${BPC_BLS_PUB_KEY}=KEY:${BPC_BLS_PRV_KEY} \
       --config "$ROOT_DIR"/config.ini \
       --data-dir "$ROOT_DIR"/nodeos-three/data \
       --p2p-peer-address 127.0.0.1:1444 \
@@ -202,55 +227,48 @@ start_func() {
       --enable-stale-production \
       --producer-name bpc \
       --signature-provider ${BPC_PUBLIC_KEY}=KEY:${BPC_PRIVATE_KEY} \
+      --signature-provider ${BPC_BLS_PUB_KEY}=KEY:${BPC_BLS_PRV_KEY} \
       --config "$ROOT_DIR"/config.ini \
       --data-dir "$ROOT_DIR"/nodeos-three/data \
       --p2p-peer-address 127.0.0.1:1444 \
       --p2p-peer-address 127.0.0.1:2444 > $LOG_DIR/nodeos-three.log 2>&1 &
   fi
-
+  
+  if [ ! -f $LOG_DIR/registered_bls_keys.txt ]; then 
+    sleep 2
+    "$SCRIPT_DIR"/open_wallet.sh "$WALLET_DIR"
+    # Now Register the Finalizer Keys On Each Node
+    # You could register these on any node
+    # Simply call to `push action eosio regfinkey`
+    "$SCRIPT_DIR"/register_bls_finalizer_key.sh http://127.0.0.1:${NODEOS_ONE_PORT} \
+              "$BPA_BLS_PUB_KEY" "$BPA_BLS_POS_KEY"
+    "$SCRIPT_DIR"/register_bls_finalizer_key.sh http://127.0.0.1:${NODEOS_TWO_PORT} \
+              "$BPB_BLS_PUB_KEY" "$BPB_BLS_POS_KEY"
+    "$SCRIPT_DIR"/register_bls_finalizer_key.sh http://127.0.0.1:${NODEOS_THREE_PORT} \
+              "$BPC_BLS_PUB_KEY" "$BPC_BLS_POS_KEY"
+    # record keys as registered 
+    touch $LOG_DIR/registered_bls_keys.txt
+  fi
   echo "waiting for production network to sync up..."
-  sleep 20
+  sleep 18
+  
+  # Activate SAVANNA 
+  if [ "$COMMAND" == "CREATE" ] && [ -f $LOG_DIR/registered_bls_keys.txt ] && [ ! -f $LOG_DIR/savanna_activated.txt ]
+  then
+    set -x
+    echo "Activating SAVANNA Consensus "
+    "$SCRIPT_DIR"/open_wallet.sh "$WALLET_DIR"
+    cleos --url $ENDPOINT push action eosio switchtosvnn '{}' -p eosio
+    touch $LOG_DIR/savanna_activated.txt
+    
+    echo "please wait for transition to Savanna consensus"
+    sleep 30
+    grep 'Transitioning to savanna' "$LOG_DIR"/nodeos-one.log
+    grep 'Transition to instant finality' "$LOG_DIR"/nodeos-one.log
+    set +x
+  fi
 }
 ## end START/CREATE COMMAND
-
-#####
-# ACTIVATE SAVANNA Function to align all the nodes
-####
-activate_savanna_func() {
-  echo "creating new finalizer BLS keys"
-  PUBLIC_KEY=()
-  PROOF_POSSESION=()
-  # producers
-  for producer_name in bpa bpb bpc
-  do
-    spring-util bls create key --to-console > "${WALLET_DIR:?}"/"${producer_name}.finalizer.key"
-    PUBLIC_KEY+=( $(grep Public "${WALLET_DIR}"/"${producer_name}.finalizer.key" | cut -d: -f2 | sed 's/ //g') ) \
-      || exit 127
-    PRIVATE_KEY+=( $(grep Private "${WALLET_DIR}"/"${producer_name}.finalizer.key" | cut -d: -f2 | sed 's/ //g') ) \
-      || exit 127
-    PROOF_POSSESION+=( $(grep Possession "${WALLET_DIR}"/"${producer_name}.finalizer.key" | cut -d: -f2 | sed 's/ //g') ) \
-      || exit 127
-    echo "# producer ${producer_name} finalizer key" >> "$ROOT_DIR"/config.ini
-    echo "signature-provider = ""${PUBLIC_KEY[@]: -1}""=KEY:""${PRIVATE_KEY[@]: -1}" >> "${ROOT_DIR}/config.ini"
-  done
-
-  echo "need to reload config: please wait shutting down node"
-  stop_func
-  echo "need to reload config: please wait while we startup up nodes"
-  start_func "START"
-
-  echo "running final command to activate finality"
-  # open wallet
-  "$SCRIPT_DIR"/open_wallet.sh "$WALLET_DIR"
-  # array will expand to multiple arguments on receiving side
-  "$SCRIPT_DIR"/activate_savanna.sh "$ENDPOINT" "${PUBLIC_KEY[@]}" "${PROOF_POSSESION[@]}"
-  echo "please wait for transition to Savanna consensus"
-  sleep 30
-  grep 'Transitioning to savanna' "$LOG_DIR"/nodeos-one.log
-  grep 'Transition to instant finality' "$LOG_DIR"/nodeos-one.log
-}
-### END ACTIVATE SAVANNA FUNCTION 
-
 echo "STARTING COMMAND ${COMMAND}"
 
 if [ "$COMMAND" == "NA" ]; then
@@ -266,15 +284,13 @@ if [ "$COMMAND" == "CLEAN" ]; then
         [ -f "$ROOT_DIR"/${d}/data/state/code_cache.bin ] && rm -f "$ROOT_DIR"/${d}/data/state/code_cache.bin
         [ -f "$ROOT_DIR"/${d}/data/state/chain_head.dat ] && rm -f "$ROOT_DIR"/${d}/data/state/chain_head.dat
         [ -f "$ROOT_DIR"/${d}/data/blocks/reversible/fork_db.dat ] && rm -f "$ROOT_DIR"/${d}/data/blocks/reversible/fork_db.dat
+        [ -f "$LOG_DIR"/registered_bls_keys.txt ] && rm -f "$LOG_DIR"/registered_bls_keys.txt
+        [ -f "$LOG_DIR"/savanna_activated.txt ] && rm -f "$LOG_DIR"/savanna_activated.txt
     done
 fi
 
 if [ "$COMMAND" == "CREATE" ] || [ "$COMMAND" == "START" ]; then
   start_func $COMMAND
-  if [ "$COMMAND" == "START" ]; then
-    sleep 1
-    activate_savanna_func
-  fi
 fi
 
 if [ "$COMMAND" == "STOP" ]; then
