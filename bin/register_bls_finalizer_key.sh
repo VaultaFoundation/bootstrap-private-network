@@ -18,10 +18,8 @@ BLS_PROOF_POSSESION=$4
 # New System Contracts Replace with actions regfinkey, and switchtosvnn
 # regfinkey [producer name] [public key] [proof of possession]
 # void system_contract::regfinkey( const name& finalizer_name, const std::string& finalizer_key, const std::string& proof_of_possession)
-set -x
 cleos --url $ENDPOINT push action eosio regfinkey "{\"finalizer_name\":\"${PRODUCER_NAME:?}\", \
                             \"finalizer_key\":\"${BLS_PUBLIC_KEY:?}\", \
                             \"proof_of_possession\":\"${BLS_PROOF_POSSESION:?}\"}" -p ${PRODUCER_NAME:?}
 
 sleep 1
-set +x

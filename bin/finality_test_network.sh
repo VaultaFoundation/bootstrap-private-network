@@ -255,7 +255,6 @@ start_func() {
   # Activate SAVANNA 
   if [ "$COMMAND" == "CREATE" ] && [ -f $LOG_DIR/registered_bls_keys.txt ] && [ ! -f $LOG_DIR/savanna_activated.txt ]
   then
-    set -x
     echo "Activating SAVANNA Consensus "
     "$SCRIPT_DIR"/open_wallet.sh "$WALLET_DIR"
     cleos --url $ENDPOINT push action eosio switchtosvnn '{}' -p eosio
@@ -265,7 +264,6 @@ start_func() {
     sleep 30
     grep 'Transitioning to savanna' "$LOG_DIR"/nodeos-one.log
     grep 'Transition to instant finality' "$LOG_DIR"/nodeos-one.log
-    set +x
   fi
 }
 ## end START/CREATE COMMAND

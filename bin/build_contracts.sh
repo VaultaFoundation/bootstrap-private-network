@@ -47,3 +47,8 @@ mkdir build
 cd build || exit
 cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -Dcdt_DIR="${CDT_BUILD_DIR}/lib/cmake/cdt" -Dspring_DIR="${SPRING_BUILD_DIR}/lib/cmake/spring" .. >> "${LOG_DIR}"/reference_contracts_build.log 2>&1
 make -j ${NPROC} >> "${LOG_DIR}"/vaulta_contracts_build.log 2>&1
+
+# noop contract
+NOOP_CONTRACT_DIR="${ROOT_DIR}"/repos/bootstrap-private-network/contracts/noopcontract/
+cd "${NOOP_CONTRACT_DIR:?}" || exit
+cdt-cpp noopcontract.cpp
