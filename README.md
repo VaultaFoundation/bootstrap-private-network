@@ -24,10 +24,7 @@ graph LR;
    - `./bin/docker-enter-container.sh`
 - Setup Antelope Network, run from inside the docker container
    - `/local/VaultaFoundation/repos/bootstrap-private-network/bin/finality_test_network.sh CREATE`
-- Start the network and activate Savanna protocol 
-   - `/local/VaultaFoundation/repos/bootstrap-private-network/bin/finality_test_network.sh START`
 - See Last Irreversible Block is *-->three<--* block behind Head Block
-
    - run `cleos get info` from inside the docker container
 
 ## Step By Step Documentation
@@ -36,7 +33,7 @@ See [Step By Step](doc/step-by-step.md)
 Changes for larger [multi-host production systems](doc/large-scale-setup.md)
 
 ## Versions of this Repo
-Listing of [Versions](doc/change-list.md) between releases of this bootstrap repo across Antelope software. See [Latest Change Log](changes/May222025.md).
+Listing of [Versions](doc/change-list.md) between releases of this bootstrap repo across Antelope software. See [Latest Change Log](changes/May302025.md).
 
 
 ## Frequently Asked Questions
