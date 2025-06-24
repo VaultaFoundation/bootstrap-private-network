@@ -6,8 +6,8 @@
 # called from Docker Build
 ###
 
-SPRING_GIT_COMMIT_TAG=${1:-v1.1.5}
-CDT_GIT_COMMIT_TAG=${2:-v4.1.0}
+SPRING_GIT_COMMIT_TAG=${1:-release/2.0}
+CDT_GIT_COMMIT_TAG=${2:-sync_call}
 let NPROC=$(nproc)/6
 TUID=$(id -ur)
 
@@ -24,9 +24,10 @@ LOG_DIR=/bigata1/log
 cd "${SPRING_GIT_DIR:?}" || exit
 
 # NOTE the branch specified here doesn't change anything
-# Docker Build sets branch with --single-branch option prevent other branches from being pulled in
+# Docker Build sets branch with --single-branch which may prevent other branches
 git checkout $SPRING_GIT_COMMIT_TAG
 git pull origin $SPRING_GIT_COMMIT_TAG
+git pull origin
 git submodule update --init --recursive
 
 [ ! -d "$SPRING_BUILD_DIR"/packages ] && mkdir -p "$SPRING_BUILD_DIR"/packages

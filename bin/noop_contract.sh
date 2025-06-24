@@ -4,15 +4,14 @@ ENDPOINT_ONE=$1
 WALLET_DIR=$2
 SCRIPT_DIR=$3
 
-cleos --url $ENDPOINT_ONE transfer eosio enf "10000 EOS" "init funding"
-cleos --url $ENDPOINT_ONE system buyram eosio enf "1000 EOS"
-
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+"${SCRIPT_DIR}"/open_wallet.sh "$WALLET_DIR" dev
 
 [ ! -s "$WALLET_DIR/null.vaulta.keys" ] && cleos create key --to-console > "$WALLET_DIR/null.vaulta.keys"
 # head because we want the first match; they may be multiple keys
 PRIVATE_KEY=$(grep Private "$WALLET_DIR/null.vaulta.keys" | head -1 | cut -d: -f2 | sed 's/ //g')
 PUBLIC_KEY=$(grep Public "$WALLET_DIR/null.vaulta.keys" | head -1 | cut -d: -f2 | sed 's/ //g')
-cleos wallet import --name finality-test-network-wallet --private-key $PRIVATE_KEY
+cleos wallet import --name dev-test-network-wallet --private-key $PRIVATE_KEY
 
 cleos --url $ENDPOINT_ONE system newaccount eosio null.vaulta ${PUBLIC_KEY:?} --stake-net "50 EOS" --stake-cpu "500 EOS" --buy-ram "1000 EOS"
 # get some spending money

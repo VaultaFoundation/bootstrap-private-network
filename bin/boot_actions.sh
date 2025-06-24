@@ -93,5 +93,5 @@ cleos --url $ENDPOINT push action eosio setpriv '["eosio.msig", 1]' -p eosio@act
 sleep 1
 # little test that everything has been setup correctly
 cleos --url $ENDPOINT system buyram eosio eosio "1000 EOS"
-# vaulta contracts go here 
+ 
 

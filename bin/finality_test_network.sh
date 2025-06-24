@@ -26,6 +26,7 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 GENESIS_FILE="/local/VaultaFoundation/repos/bootstrap-private-network/config/genesis.json"
 CONFIG_FILE="/local/VaultaFoundation/repos/bootstrap-private-network/config/config.ini"
 LOGGING_JSON="/local/VaultaFoundation/repos/bootstrap-private-network/config/logging.json"
+NUM_PRODUCERS=3
 
 ######
 # Stop Function to shutdown all nodes
@@ -60,6 +61,10 @@ check_used_space() {
 ####
 start_func() {
   COMMAND=$1
+  
+  if [ "$COMMAND" == "CREATE-TESTNET" ]; then
+    NUM_PRODUCERS=21
+  fi
 
   check_used_space
   USED_SPACE=$?
@@ -71,10 +76,10 @@ start_func() {
 
   # create private key
   [ ! -d "$WALLET_DIR" ] && mkdir -p "$WALLET_DIR"
-  [ ! -s "$WALLET_DIR"/finality-test-network.keys ] && cleos create key --to-console > "$WALLET_DIR"/finality-test-network.keys
+  [ ! -s "$WALLET_DIR"/root-test-network.keys ] && cleos create key --to-console > "$WALLET_DIR"/root-test-network.keys
   # head because we want the first match; they may be multiple keys
-  EOS_ROOT_PRIVATE_KEY=$(grep Private "${WALLET_DIR}"/finality-test-network.keys | head -1 | cut -d: -f2 | sed 's/ //g')
-  EOS_ROOT_PUBLIC_KEY=$(grep Public "${WALLET_DIR}"/finality-test-network.keys | head -1 | cut -d: -f2 | sed 's/ //g')
+  EOS_ROOT_PRIVATE_KEY=$(grep Private "${WALLET_DIR}"/root-test-network.keys | head -1 | cut -d: -f2 | sed 's/ //g')
+  EOS_ROOT_PUBLIC_KEY=$(grep Public "${WALLET_DIR}"/root-test-network.keys | head -1 | cut -d: -f2 | sed 's/ //g')
   # create keys for first three producers
   for producer_name in bpa bpb bpc
   do
@@ -83,7 +88,7 @@ start_func() {
   done
 
   # create initialize genesis file; create directories; copy cofigs into place
-  if [ "$COMMAND" == "CREATE" ]; then
+  if [ "$COMMAND" == "CREATE"  ]; then
     NOW=$(date +%FT%T.%3N)
     sed "s/\"initial_key\": \".*\",/\"initial_key\": \"${EOS_ROOT_PUBLIC_KEY}\",/" $GENESIS_FILE > /tmp/genesis.json
     sed "s/\"initial_timestamp\": \".*\",/\"initial_timestamp\": \"${NOW}\",/" /tmp/genesis.json > ${ROOT_DIR}/genesis.json
@@ -97,12 +102,12 @@ start_func() {
   fi
 
   # setup wallet
-  "$SCRIPT_DIR"/open_wallet.sh "$WALLET_DIR"
+  "$SCRIPT_DIR"/open_wallet.sh "$WALLET_DIR" root
   # Import Root Private Key
-  cleos wallet import --name finality-test-network-wallet --private-key $EOS_ROOT_PRIVATE_KEY
+  cleos wallet import --name root-test-network-wallet --private-key $EOS_ROOT_PRIVATE_KEY
 
   # start nodeos one always allow stale production
-  if [ "$COMMAND" == "CREATE" ]; then
+  [[ "$COMMAND" == "CREATE" || "$COMMAND" == "CREATE-TESTNET" ]]; then
     nodeos --genesis-json ${ROOT_DIR}/genesis.json --agent-name "Finality Test Node One" \
       --http-server-address 0.0.0.0:${NODEOS_ONE_PORT} \
       --p2p-listen-endpoint 0.0.0.0:1444 \
@@ -121,14 +126,16 @@ start_func() {
     "$SCRIPT_DIR"/add_time_func.sh "$ENDPOINT" 
     sleep 1
     # create producer and user accounts, stake EOS
-    "$SCRIPT_DIR"/create_accounts.sh "$ENDPOINT" "$CONTRACT_DIR"
+    "$SCRIPT_DIR"/create_accounts.sh "$ENDPOINT" "$CONTRACT_DIR" $NUM_PRODUCERS
     sleep 1
     # register producers and users vote for producers
-    "$SCRIPT_DIR"/block_producer_setup.sh "$ENDPOINT" "$WALLET_DIR"
+    "$SCRIPT_DIR"/block_producer_setup.sh "$ENDPOINT" "$WALLET_DIR" $NUM_PRODUCERS
     # update active permisions for eosio and core.vaulta account
-    "$SCRIPT_DIR"/set_authorities.sh "$ENDPOINT" "$SCRIPT_DIR" "$WALLET_DIR"
+    "$SCRIPT_DIR"/set_authorities.sh "$ENDPOINT" "$SCRIPT_DIR" "$WALLET_DIR" $NUM_PRODUCERS
     # create null.vaulta user and noop contracts
     "$SCRIPT_DIR"/noop_contract.sh "$ENDPOINT" "$WALLET_DIR" "$SCRIPT_DIR"
+    # faucet funding
+    "$SCRIPT_DIR"/faucet-account.sh "$ENDPOINT" "$CONTRACT_DIR"
     # need a long sleep here to allow time for new production schedule to settle
     echo "please wait 5 seconds while we wait for new producer schedule to settle"
     sleep 5
@@ -172,7 +179,7 @@ start_func() {
   BPB_BLS_PRV_KEY=$(grep Private "${WALLET_DIR}/bpb.finalizer.key" | cut -d: -f2 | sed 's/ //g')
   BPB_BLS_POS=$(grep Possession "${WALLET_DIR}/bpb.finalizer.key" | cut -d: -f2 | sed 's/ //g')
   # NODEOS COMMAND 
-  if [ "$COMMAND" == "CREATE" ]; then
+  [[ "$COMMAND" == "CREATE" || "$COMMAND" == "CREATE-TESTNET" ]]; then
     nodeos --genesis-json ${ROOT_DIR}/genesis.json --agent-name "Finality Test Node Two" \
       --http-server-address 0.0.0.0:${NODEOS_TWO_PORT} \
       --p2p-listen-endpoint 0.0.0.0:2444 \
@@ -208,7 +215,7 @@ start_func() {
   BPC_BLS_PRV_KEY=$(grep Private "${WALLET_DIR}/bpc.finalizer.key" | cut -d: -f2 | sed 's/ //g')
   BPC_BLS_POS=$(grep Possession "${WALLET_DIR}/bpc.finalizer.key" | cut -d: -f2 | sed 's/ //g')
   # NODEOS COMMAND 
-  if [ "$COMMAND" == "CREATE" ]; then
+  [[ "$COMMAND" == "CREATE" || "$COMMAND" == "CREATE-TESTNET" ]]; then
     nodeos --genesis-json ${ROOT_DIR}/genesis.json --agent-name "Finality Test Node Three" \
       --http-server-address 0.0.0.0:${NODEOS_THREE_PORT} \
       --p2p-listen-endpoint 0.0.0.0:3444 \
@@ -236,7 +243,7 @@ start_func() {
   
   if [ ! -f $LOG_DIR/registered_bls_keys.txt ]; then 
     sleep 2
-    "$SCRIPT_DIR"/open_wallet.sh "$WALLET_DIR"
+    "$SCRIPT_DIR"/open_wallet.sh "$WALLET_DIR" dev
     # Now Register the Finalizer Keys On Each Node You could register these on any node
     # args: producer_name, bls_pub_key, bls_proof_of_posession
     # Simply call to `push action eosio regfinkey`

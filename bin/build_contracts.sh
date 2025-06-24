@@ -6,7 +6,7 @@
 # called from Docker Build
 ###
 
-EOS_CONTRACTS_GIT_COMMIT_TAG=${1:-v3.8.0}
+EOS_CONTRACTS_GIT_COMMIT_TAG=${1:-main}
 VAULTA_CONTRACTS_GIT_COMMIT_TAG=${2:-main}
 let NPROC=$(nproc)/6
 TUID=$(id -ur)

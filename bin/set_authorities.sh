@@ -8,42 +8,56 @@
 ENDPOINT_ONE=$1
 SCRIPT_DIR=$2
 WALLET_DIR=$3
+NUM_PRODUCERS=${4:-3}
 
 # Make sure wallet is open 
-"$SCRIPT_DIR"/open_wallet.sh "$WALLET_DIR"
+"$SCRIPT_DIR"/open_wallet.sh "$WALLET_DIR" root
 
 VAULTA_PUBLIC_KEY=$(grep Public "${WALLET_DIR}"/core.vaulta.keys | head -1 | cut -d: -f2 | sed 's/ //g')
-EOS_ROOT_PUBLIC_KEY=$(grep Public "${WALLET_DIR}"/finality-test-network.keys | head -1 | cut -d: -f2 | sed 's/ //g')
+EOS_ROOT_PUBLIC_KEY=$(grep Public "${WALLET_DIR}"/root-test-network.keys | head -1 | cut -d: -f2 | sed 's/ //g')
+
+
+generate_permissions_json() {
+  local N="$1"
+  local json=''
+  
+  for ((i=0; i<N; i++)); do
+    # Map i=0 to 'a', i=1 to 'b', ..., i=25 to 'z'
+    letter=$(printf "\\x$(printf '%x' $((97 + i)))")
+
+    json+="
+  {
+    \"permission\": {
+      \"actor\": \"bp${letter}\",
+      \"permission\": \"active\"
+    },
+    \"weight\": 1
+  }"
+    if (( i < N - 1 )); then
+      json+=","
+    fi
+  done
+
+  echo "$json"
+}
+
+producer_accounts = generate_permissions_json $NUM_PRODUCERS
 
 # Lets extent authorties to block producers so they can MSIG
 # remove key access
 # delegate active permissions
 cat > $HOME/eosio_required_auth.json << EOF
 {
-  "threshold": 2,
-  "keys": [],
-  "accounts": [
+  "threshold": 15,
+  "keys": [
     {
-      "permission": {
-        "actor": "bpa",
-        "permission": "active"
-      },
-      "weight": 1
-    },
-    {
-      "permission": {
-        "actor": "bpb",
-        "permission": "active"
-      },
-      "weight": 1
-    },
-    {
-      "permission": {
-        "actor": "bpc",
-        "permission": "active"
-      },
-      "weight": 1
+      "key": "${EOS_ROOT_PUBLIC_KEY}",
+      "weight": 15
     }
+  ],
+  "accounts": [
+  {"permission":{"actor":"admin.vaulta","weight":15}},
+  ${account-perms}
   ],
   "waits": []
 }
@@ -55,35 +69,16 @@ rm $HOME/eosio_required_auth.json
 # keep our access by key 
 cat > $HOME/vaulta_required_auth.json << EOF
 {
-  "threshold": 2,
+  "threshold": 15,
   "keys": [
     {
       "key": "${VAULTA_PUBLIC_KEY}",
-      "weight": 2
+      "weight": 15
     }
   ],
   "accounts": [
-    {
-      "permission": {
-        "actor": "bpa",
-        "permission": "active"
-      },
-      "weight": 1
-    },
-    {
-      "permission": {
-        "actor": "bpb",
-        "permission": "active"
-      },
-      "weight": 1
-    },
-    {
-      "permission": {
-        "actor": "bpc",
-        "permission": "active"
-      },
-      "weight": 1
-    }
+     {"permission":{"actor":"admin.vaulta","weight":15}},
+     ${account-perms}
   ],
   "waits": []
 }

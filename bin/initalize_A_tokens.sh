@@ -24,7 +24,7 @@ VAULTA_PUBLIC_KEY=$(grep Public "${WALLET_DIR}"/core.vaulta.keys | head -1 | cut
 VAULTA_PRIVATE_KEY=$(grep Private "${WALLET_DIR}"/core.vaulta.keys | head -1 | cut -d: -f2 | sed 's/ //g')
 
 # Import Core.Vaulta Private Key
-cleos wallet import --name finality-test-network-wallet --private-key $VAULTA_PRIVATE_KEY
+cleos wallet import --name root-test-network-wallet --private-key $VAULTA_PRIVATE_KEY
 # Create User
 cleos -u $ENDPOINT_ONE system newaccount vaulta core.vaulta ${VAULTA_PUBLIC_KEY} ${VAULTA_PUBLIC_KEY} --stake-net "5000.0 EOS" --stake-cpu "5000.0 EOS" --buy-ram-kbytes 4000 -pvaulta@active
 
