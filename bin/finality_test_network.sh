@@ -189,7 +189,7 @@ start_func() {
   fi
   
   # NODEOS COMMAND 
-  [[ "$COMMAND" == "CREATE" || "$COMMAND" == "CREATE-TESTNET" ]]; then
+  if [[ "$COMMAND" == "CREATE" || "$COMMAND" == "CREATE-TESTNET" ]]; then
     nodeos --genesis-json ${ROOT_DIR}/genesis.json --agent-name "Finality Test Node Two" \
       --http-server-address 0.0.0.0:${NODEOS_TWO_PORT} \
       --p2p-listen-endpoint 0.0.0.0:2444 \
