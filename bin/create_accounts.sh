@@ -19,7 +19,7 @@ admin_name="admin.vaulta"
 # head because we want the first match; they may be multiple keys
 ADMIN_PRIVATE_KEY=$(grep Private "$WALLET_DIR/${admin_name}.keys" | head -1 | cut -d: -f2 | sed 's/ //g')
 ADMIN_PUBLIC_KEY=$(grep Public "$WALLET_DIR/${admin_name}.keys" | head -1 | cut -d: -f2 | sed 's/ //g')
-cleos wallet import --name admin-test-network-wallet --private-key $PRIVATE_KEY
+cleos wallet import --name admin-test-network-wallet --private-key $ADMIN_PRIVATE_KEY
 
 cleos --url $ENDPOINT_ONE system newaccount eosio ${admin_name:?} ${ADMIN_PUBLIC_KEY:?} --stake-net "50 EOS" --stake-cpu "500 EOS" --buy-ram "1000 EOS"
 # get some spending money
