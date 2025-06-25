@@ -103,7 +103,7 @@ start_func() {
   cleos wallet import --name root-test-network-wallet --private-key $EOS_ROOT_PRIVATE_KEY
 
   # start nodeos one always allow stale production
-  [[ "$COMMAND" == "CREATE" || "$COMMAND" == "CREATE-TESTNET" ]]; then
+  if [[ "$COMMAND" == "CREATE" || "$COMMAND" == "CREATE-TESTNET" ]]; then
     nodeos --genesis-json ${ROOT_DIR}/genesis.json --agent-name "Finality Test Node One" \
       --http-server-address 0.0.0.0:${NODEOS_ONE_PORT} \
       --p2p-listen-endpoint 0.0.0.0:1444 \
