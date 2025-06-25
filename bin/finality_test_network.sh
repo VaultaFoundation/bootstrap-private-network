@@ -122,7 +122,7 @@ start_func() {
     "$SCRIPT_DIR"/add_time_func.sh "$ENDPOINT" 
     sleep 1
     # create producer and user accounts, stake EOS
-    "$SCRIPT_DIR"/create_accounts.sh "$ENDPOINT" "$CONTRACT_DIR" $NUM_PRODUCERS
+    "$SCRIPT_DIR"/create_accounts.sh "$ENDPOINT" "$WALLET_DIR" $NUM_PRODUCERS
     sleep 1
     # register producers and users vote for producers
     # split is the breakout of producer keys THIRDS or HALVES
