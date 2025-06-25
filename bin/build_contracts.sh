@@ -29,7 +29,7 @@ git checkout $EOS_CONTRACTS_GIT_COMMIT_TAG
 git pull origin $EOS_CONTRACTS_GIT_COMMIT_TAG
 mkdir build
 cd build || exit
-cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -Dspring_DIR="${SPRING_BUILD_DIR}/lib/cmake/spring" .. >> "${LOG_DIR}"/reference_contracts_build.log 2>&1
+cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DSYSTEM_ENABLE_SPRING_VERSION_CHECK=OFF -Dspring_DIR="${SPRING_BUILD_DIR}/lib/cmake/spring" .. >> "${LOG_DIR}"/reference_contracts_build.log 2>&1
 make -j ${NPROC} >> "${LOG_DIR}"/system_contracts_build.log 2>&1
 
 # time
@@ -38,14 +38,13 @@ cd "${TIME_CONTRACT_DIR:?}" || exit
 cdt-cpp eosio.time.cpp
 
 # now vaulta
-VAULTA_BUILD_DIR="${ROOT_DIR}"/vaulta_build
 VAULTA_CONTRACT_DIR="${ROOT_DIR}"/repos/vaulta-system-contract
 cd "${VAULTA_CONTRACT_DIR:?}" || exit
 git checkout $VAULTA_CONTRACTS_GIT_COMMIT_TAG
 git pull origin $VAULTA_CONTRACTS_GIT_COMMIT_TAG
 mkdir build
 cd build || exit
-cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -Dcdt_DIR="${CDT_BUILD_DIR}/lib/cmake/cdt" -Dspring_DIR="${SPRING_BUILD_DIR}/lib/cmake/spring" .. >> "${LOG_DIR}"/reference_contracts_build.log 2>&1
+cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DSYSTEM_ENABLE_SPRING_VERSION_CHECK=OFF -Dcdt_DIR="${CDT_BUILD_DIR}/lib/cmake/cdt" -Dspring_DIR="${SPRING_BUILD_DIR}/lib/cmake/spring" .. >> "${LOG_DIR}"/reference_contracts_build.log 2>&1
 make -j ${NPROC} >> "${LOG_DIR}"/vaulta_contracts_build.log 2>&1
 
 # noop contract
