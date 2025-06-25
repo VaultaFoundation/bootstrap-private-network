@@ -115,5 +115,5 @@ for user_name in usera userb userc userd usere userf userg userh useri userj \
    userv userw userx usery userz
 do
   # vote
-  cleos --url "$ENDPOINT_ONE" system voteproducer prods "${user_name}" "${all_producer_names}"
+  cleos --url "$ENDPOINT_ONE" system voteproducer prods "${user_name}" ${all_producer_names}
 done
