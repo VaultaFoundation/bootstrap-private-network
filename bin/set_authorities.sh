@@ -42,27 +42,28 @@ generate_permissions_json() {
 }
 
 producer_accounts=$(generate_permissions_json $NUM_PRODUCERS)
+THRESHOLD=$(( NUM_PRODUCERS * 2 / 3 ))
 
 # Lets extent authorties to block producers so they can MSIG
 # remove key access
 # delegate active permissions
 cat > $HOME/eosio_required_auth.json << EOF
 {
-  "threshold": 15,
+  "threshold": ${THRESHOLD},
   "keys": [
     {
       "key": "${EOS_ROOT_PUBLIC_KEY}",
-      "weight": 15
+      "weight": ${THRESHOLD}
     }
   ],
   "accounts": [
-  {"permission":{"actor":"admin.vaulta","weight":15}},
+  {"permission":{"actor":"admin.vaulta","weight": ${THRESHOLD}}},
   ${producer_accounts}
   ],
   "waits": []
 }
 EOF
-cleos  --url $ENDPOINT_ONE set account permission eosio active $HOME/eosio_required_auth.json
+cleos  --url $ENDPOINT_ONE set account permission eosio active $HOME/eosio_required_auth.json -peosio@owner
 rm $HOME/eosio_required_auth.json
 
 # Lets extent authorties to block producers so they can MSIG

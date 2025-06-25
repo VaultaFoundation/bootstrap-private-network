@@ -50,9 +50,12 @@ switch_groups() {
 NUMBER_OF_KEYS_PER_GROUP=$(( (NUM_PRODUCERS + DIVISOR - 1) / DIVISOR ))
 group_count=0
 producer_created=0
+all_producer_names=""
 GROUP_NAME="ONE"
 for producer_name in bpa bpb bpc bpd bpe bpf bpg bph bpi bpj bpk bpl bpm bpn bpo bpp bpq bpr bps bpt bpu bpv bpw bpx bpy bpz 
 do
+    # track producers for voting later
+    all_producer_names="${all_producer_names} ${producer_name}"
     # Ensure group files exists
     SIG_GROUP_FILE="${WALLET_DIR:?}/GROUP_${GROUP_NAME}.keys"
     if [[ ! -f "$SIG_GROUP_FILE" ]]; then
@@ -112,5 +115,5 @@ for user_name in usera userb userc userd usere userf userg userh useri userj \
    userv userw userx usery userz
 do
   # vote
-  cleos --url $ENDPOINT_ONE system voteproducer prods ${user_name} bpa bpb bpc
+  cleos --url "$ENDPOINT_ONE" system voteproducer prods "${user_name}" "${all_producer_names}"
 done

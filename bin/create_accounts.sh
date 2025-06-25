@@ -11,7 +11,7 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 "${SCRIPT_DIR}"/open_wallet.sh "$WALLET_DIR" users
 
 cleos --url $ENDPOINT_ONE transfer eosio vaulta "10000 EOS" "init funding"
-cleos --url $ENDPOINT_ONE system buyram eosio vaulta "1000 EOS"
+cleos --url $ENDPOINT_ONE system buyram eosio vaulta "100 EOS"
 
 # create admin account 
 admin_name="admin.vaulta"
@@ -21,9 +21,9 @@ ADMIN_PRIVATE_KEY=$(grep Private "$WALLET_DIR/${admin_name}.keys" | head -1 | cu
 ADMIN_PUBLIC_KEY=$(grep Public "$WALLET_DIR/${admin_name}.keys" | head -1 | cut -d: -f2 | sed 's/ //g')
 cleos wallet import --name admin-test-network-wallet --private-key $ADMIN_PRIVATE_KEY
 
-cleos --url $ENDPOINT_ONE system newaccount eosio ${admin_name:?} ${ADMIN_PUBLIC_KEY:?} --stake-net "50 EOS" --stake-cpu "500 EOS" --buy-ram "1000 EOS"
+cleos --url $ENDPOINT_ONE system newaccount eosio ${admin_name:?} ${ADMIN_PUBLIC_KEY:?} --stake-net "50 EOS" --stake-cpu "500 EOS" --buy-ram "100 EOS"
 # get some spending money
-cleos --url $ENDPOINT_ONE transfer eosio ${admin_name} "100 EOS" "init funding"
+cleos --url $ENDPOINT_ONE transfer eosio ${admin_name} "1000 EOS" "init funding"
 # self stake some net and cpu
 cleos --url $ENDPOINT_ONE system delegatebw ${admin_name} ${admin_name} "400.0 EOS" "400.0 EOS"
 
@@ -40,9 +40,9 @@ do
     cleos wallet import --name dev-test-network-wallet --private-key $PRIVATE_KEY
 
     # 1550 staked per producer 
-    cleos --url $ENDPOINT_ONE system newaccount eosio ${producer_name:?} ${PUBLIC_KEY:?} --stake-net "50 EOS" --stake-cpu "500 EOS" --buy-ram "1000 EOS"
+    cleos --url $ENDPOINT_ONE system newaccount eosio ${producer_name:?} ${PUBLIC_KEY:?} --stake-net "50 EOS" --stake-cpu "500 EOS" --buy-ram "100 EOS"
     # get some spending money
-    cleos --url $ENDPOINT_ONE transfer eosio ${producer_name} "100 EOS" "init funding"
+    cleos --url $ENDPOINT_ONE transfer eosio ${producer_name} "1000 EOS" "init funding"
     # self stake some net and cpu
     cleos --url $ENDPOINT_ONE system delegatebw ${producer_name} ${producer_name} "400.0 EOS" "400.0 EOS"
     
