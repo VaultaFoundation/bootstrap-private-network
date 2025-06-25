@@ -41,7 +41,7 @@ generate_permissions_json() {
   echo "$json"
 }
 
-producer_accounts = generate_permissions_json $NUM_PRODUCERS
+producer_accounts=$(generate_permissions_json $NUM_PRODUCERS)
 
 # Lets extent authorties to block producers so they can MSIG
 # remove key access
@@ -57,7 +57,7 @@ cat > $HOME/eosio_required_auth.json << EOF
   ],
   "accounts": [
   {"permission":{"actor":"admin.vaulta","weight":15}},
-  ${account-perms}
+  ${producer_accounts}
   ],
   "waits": []
 }
@@ -78,7 +78,7 @@ cat > $HOME/vaulta_required_auth.json << EOF
   ],
   "accounts": [
      {"permission":{"actor":"admin.vaulta","weight":15}},
-     ${account-perms}
+     ${producer_accounts}
   ],
   "waits": []
 }
