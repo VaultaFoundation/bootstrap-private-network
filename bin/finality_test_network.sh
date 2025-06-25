@@ -132,7 +132,7 @@ start_func() {
     # create null.vaulta user and noop contracts
     "$SCRIPT_DIR"/noop_contract.sh "$ENDPOINT" "$WALLET_DIR" "$SCRIPT_DIR"
     # faucet funding
-    "$SCRIPT_DIR"/faucet-account.sh "$ENDPOINT" "$CONTRACT_DIR"
+    "$SCRIPT_DIR"/faucet-account.sh "$ENDPOINT" "$WALLET_DIR"
     # need a long sleep here to allow time for new production schedule to settle
     echo "please wait 5 seconds while we wait for new producer schedule to settle"
     sleep 5

@@ -63,7 +63,7 @@ cat > $HOME/eosio_required_auth.json << EOF
   "waits": []
 }
 EOF
-cleos  --url $ENDPOINT_ONE set account permission eosio active $HOME/eosio_required_auth.json -peosio@owner
+cleos  --url $ENDPOINT_ONE set account permission eosio active $HOME/eosio_required_auth.json -peosio@active
 rm $HOME/eosio_required_auth.json
 
 # Lets extent authorties to block producers so they can MSIG

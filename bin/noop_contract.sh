@@ -15,9 +15,9 @@ cleos wallet import --name dev-test-network-wallet --private-key $PRIVATE_KEY
 
 cleos --url $ENDPOINT_ONE system newaccount eosio null.vaulta ${PUBLIC_KEY:?} --stake-net "50 EOS" --stake-cpu "500 EOS" --buy-ram "1000 EOS"
 # get some spending money
-cleos --url $ENDPOINT_ONE transfer eosio null.vaulta "10000 EOS" "init funding"
+cleos --url $ENDPOINT_ONE transfer eosio null.vaulta "1000 EOS" "init funding"
 # self stake some net and cpu
-cleos --url $ENDPOINT_ONE system delegatebw null.vaulta null.vaulta "4000.0 EOS" "4000.0 EOS"
+cleos --url $ENDPOINT_ONE system delegatebw null.vaulta null.vaulta "400.0 EOS" "400.0 EOS"
 # create the contract 
 LOCAL_CONTRACTS="${SCRIPT_DIR}"/../contracts
 cleos --url $ENDPOINT_ONE set contract null.vaulta "${LOCAL_CONTRACTS}"/noopcontract/ noopcontract.wasm noopcontract.abi

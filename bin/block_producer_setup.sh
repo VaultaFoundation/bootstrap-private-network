@@ -55,7 +55,7 @@ GROUP_NAME="ONE"
 for producer_name in bpa bpb bpc bpd bpe bpf bpg bph bpi bpj bpk bpl bpm bpn bpo bpp bpq bpr bps bpt bpu bpv bpw bpx bpy bpz 
 do
     # track producers for voting later
-    all_producer_names="${all_producer_names} ${producer_name}"
+    all_producer_names="${all_producer_names}${producer_name} "
     # Ensure group files exists
     SIG_GROUP_FILE="${WALLET_DIR:?}/GROUP_${GROUP_NAME}.keys"
     if [[ ! -f "$SIG_GROUP_FILE" ]]; then

@@ -2,7 +2,6 @@
 
 ENDPOINT_ONE=$1
 WALLET_DIR=$2
-NUM_PRODUCERS=${3:-3}
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 "${SCRIPT_DIR}"/open_wallet.sh "$WALLET_DIR" admin
