@@ -288,6 +288,24 @@ if [ "$COMMAND" == "CLEAN" ]; then
         [ -f "$ROOT_DIR"/${d}/data/blocks/reversible/fork_db.dat ] && rm -f "$ROOT_DIR"/${d}/data/blocks/reversible/fork_db.dat
         [ -f "$LOG_DIR"/registered_bls_keys.txt ] && rm -f "$LOG_DIR"/registered_bls_keys.txt
         [ -f "$LOG_DIR"/savanna_activated.txt ] && rm -f "$LOG_DIR"/savanna_activated.txt
+        if [[ -f "${WALLET_DIR:?}/GROUP_ONE.producers" ]]; then
+          rm "${WALLET_DIR:?}/GROUP_ONE.producers"
+        fi
+        if [[ -f "${WALLET_DIR:?}/GROUP_ONE.keys" ]]; then
+          rm "${WALLET_DIR:?}/GROUP_ONE.keys"
+        fi
+        if [[ -f "${WALLET_DIR:?}/GROUP_TWO.producers" ]]; then
+          rm "${WALLET_DIR:?}/GROUP_TWO.producers"
+        fi
+        if [[ -f "${WALLET_DIR:?}/GROUP_TWO.keys" ]]; then
+          rm "${WALLET_DIR:?}/GROUP_TWO.keys"
+        fi
+        if [[ -f "${WALLET_DIR:?}/GROUP_THREE.producers" ]]; then
+          rm "${WALLET_DIR:?}/GROUP_THREE.producers"
+        fi
+        if [[ -f "${WALLET_DIR:?}/GROUP_THREE.keys" ]]; then
+          rm "${WALLET_DIR:?}/GROUP_THREE.keys"
+        fi
     done
 fi
 
