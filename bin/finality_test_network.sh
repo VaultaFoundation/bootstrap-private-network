@@ -163,8 +163,8 @@ start_func() {
     --http-server-address 0.0.0.0:${NODEOS_ONE_PORT} \
     --p2p-listen-endpoint 0.0.0.0:1444 \
     --enable-stale-production \
-    "${NODE_ONE_PRODUCERS}" \
-    "${NODE_ONE_SIGS}" \
+    ${NODE_ONE_PRODUCERS} \
+    ${NODE_ONE_SIGS} \
     --config "$ROOT_DIR"/config.ini \
     --data-dir "$ROOT_DIR"/nodeos-one/data \
     --p2p-peer-address 127.0.0.1:2444 \
@@ -194,8 +194,8 @@ start_func() {
       --http-server-address 0.0.0.0:${NODEOS_TWO_PORT} \
       --p2p-listen-endpoint 0.0.0.0:2444 \
       --enable-stale-production \
-      "${NODE_TWO_PRODUCERS}" \
-      "${NODE_TWO_SIGS}" \
+      ${NODE_TWO_PRODUCERS} \
+      ${NODE_TWO_SIGS} \
       --config "$ROOT_DIR"/config.ini \
       --data-dir "$ROOT_DIR"/nodeos-two/data \
       --p2p-peer-address 127.0.0.1:1444 \
@@ -205,8 +205,8 @@ start_func() {
       --http-server-address 0.0.0.0:${NODEOS_TWO_PORT} \
       --p2p-listen-endpoint 0.0.0.0:2444 \
       --enable-stale-production \
-      "${NODE_TWO_PRODUCERS}" \
-      "${NODE_TWO_SIGS}" \
+      ${NODE_TWO_PRODUCERS} \
+      ${NODE_TWO_SIGS} \
       --config "$ROOT_DIR"/config.ini \
       --data-dir "$ROOT_DIR"/nodeos-two/data \
       --p2p-peer-address 127.0.0.1:1444 \
@@ -235,8 +235,8 @@ start_func() {
       --http-server-address 0.0.0.0:${NODEOS_THREE_PORT} \
       --p2p-listen-endpoint 0.0.0.0:3444 \
       --enable-stale-production \
-      "${NODE_THREE_PRODUCERS}" \
-      "${NODE_THREE_SIGS}" \
+      ${NODE_THREE_PRODUCERS} \
+      ${NODE_THREE_SIGS} \
       --config "$ROOT_DIR"/config.ini \
       --data-dir "$ROOT_DIR"/nodeos-three/data \
       --p2p-peer-address 127.0.0.1:1444 \
@@ -246,8 +246,8 @@ start_func() {
       --http-server-address 0.0.0.0:${NODEOS_THREE_PORT} \
       --p2p-listen-endpoint 0.0.0.0:3444 \
       --enable-stale-production \
-      "${NODE_THREE_PRODUCERS}" \
-      "${NODE_THREE_SIGS}" \
+      ${NODE_THREE_PRODUCERS} \
+      ${NODE_THREE_SIGS} \
       --config "$ROOT_DIR"/config.ini \
       --data-dir "$ROOT_DIR"/nodeos-three/data \
       --p2p-peer-address 127.0.0.1:1444 \
