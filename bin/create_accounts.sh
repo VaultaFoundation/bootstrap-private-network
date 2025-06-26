@@ -66,7 +66,7 @@ for user_name in usera userb userc userd usere userf userg userh useri userj \
    userv userw userx usery userz
 do
   # create user account
-  cleos --url $ENDPOINT_ONE ${user_name:?} ${USER_PUBLIC_KEY:?} --stake-net "50 EOS" --stake-cpu "50 EOS" --buy-ram "1 EOS"
+  cleos --url $ENDPOINT_ONE system newaccount eosio ${user_name:?} ${USER_PUBLIC_KEY:?} --stake-net "50 EOS" --stake-cpu "50 EOS" --buy-ram "1 EOS"
   # get some spending money
   cleos --url $ENDPOINT_ONE transfer eosio ${user_name} "65423000 EOS" "init funding"
   # stake 65,423,000 EOS x26 accounts = 1,700,998,000 EOS Total Staked 80.99% of 2.1B total funds
