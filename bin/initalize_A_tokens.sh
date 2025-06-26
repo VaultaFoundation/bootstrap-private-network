@@ -12,7 +12,7 @@ WALLET_DIR=$3
 SCRIPT_DIR=$4
 
 # Make sure wallet is open 
-"$SCRIPT_DIR"/open_wallet.sh "$WALLET_DIR"
+"$SCRIPT_DIR"/open_wallet.sh "$WALLET_DIR" root
 
 # Fund vaulta and add ram
 cleos --url $ENDPOINT_ONE transfer eosio vaulta "20000 EOS" "init funding"

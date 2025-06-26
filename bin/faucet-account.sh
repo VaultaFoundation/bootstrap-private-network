@@ -8,7 +8,7 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 "${SCRIPT_DIR}"/open_wallet.sh "$WALLET_DIR" root
 
 # create faucet account 
-admin_name="faucet.vaulta"
+admin_name="spout.vaulta"
 [ ! -s "$WALLET_DIR/${admin_name}.keys" ] && cleos create key --to-console > "$WALLET_DIR/${admin_name}.keys"
 # head because we want the first match; they may be multiple keys
 ADMIN_PRIVATE_KEY=$(grep Private "$WALLET_DIR/${admin_name}.keys" | head -1 | cut -d: -f2 | sed 's/ //g')
