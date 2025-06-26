@@ -6,8 +6,14 @@ WALLET_DIR=$2
 # Make sure wallet is open 
 "$SCRIPT_DIR"/open_wallet.sh "$WALLET_DIR" root
 
+# transfer funds over
+cleos --url $ENDPOINT push action eosio.token transfer \
+  '{"to":"eosio.reserv","from":"spout.vaulta","quantity":"100.0000 EOS","memo":"funds for powerup"}' \
+  -pspout.vaulta
 # needed for powerup
 cleos --url $ENDPOINT system buyram eosio eosio.reserv "5 EOS"
+# self stake some net and cpu
+cleos --url $ENDPOINT_ONE system delegatebw eosio.reserv eosio.reserv "40.0 EOS" "40.0 EOS"
 
 # future by 300 seconds 
 TARGET=$(date -d "300 seconds" +%FT%T.%3N)
