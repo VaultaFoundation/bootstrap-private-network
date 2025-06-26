@@ -5,7 +5,6 @@ WALLET_DIR=$2
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 "${SCRIPT_DIR}"/open_wallet.sh "$WALLET_DIR" admin
-"${SCRIPT_DIR}"/open_wallet.sh "$WALLET_DIR" root
 
 # create faucet account 
 admin_name="spout.vaulta"
@@ -17,6 +16,6 @@ cleos wallet import --name admin-test-network-wallet --private-key $ADMIN_PRIVAT
 
 cleos --url $ENDPOINT_ONE system newaccount eosio ${admin_name:?} ${ADMIN_PUBLIC_KEY:?} --stake-net "500 EOS" --stake-cpu "5000 EOS" --buy-ram "10000 EOS"
 # get some spending money
-cleos --url $ENDPOINT_ONE transfer eosio ${admin_name} "10000000 EOS" "faucet funding"
+cleos --url $ENDPOINT_ONE transfer eosio ${admin_name} "200000000 EOS" "faucet funding"
 # self stake some net and cpu
 cleos --url $ENDPOINT_ONE system delegatebw ${admin_name} ${admin_name} "4000.0 EOS" "4000.0 EOS"

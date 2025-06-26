@@ -127,12 +127,13 @@ start_func() {
     # register producers and users vote for producers
     # split is the breakout of producer keys THIRDS or HALVES
     "$SCRIPT_DIR"/block_producer_setup.sh "$ENDPOINT" "$WALLET_DIR" $NUM_PRODUCERS $SPLIT
-    # update active permisions for eosio and core.vaulta account
-    "$SCRIPT_DIR"/set_authorities.sh "$ENDPOINT" "$SCRIPT_DIR" "$WALLET_DIR" $NUM_PRODUCERS
     # create null.vaulta user and noop contracts
     "$SCRIPT_DIR"/noop_contract.sh "$ENDPOINT" "$WALLET_DIR" "$SCRIPT_DIR"
     # faucet funding
     "$SCRIPT_DIR"/faucet-account.sh "$ENDPOINT" "$WALLET_DIR"
+    sleep 1
+    # update active permisions for eosio and core.vaulta account
+    "$SCRIPT_DIR"/set_authorities.sh "$ENDPOINT" "$SCRIPT_DIR" "$WALLET_DIR" $NUM_PRODUCERS
     # need a long sleep here to allow time for new production schedule to settle
     echo "please wait 5 seconds while we wait for new producer schedule to settle"
     sleep 5
