@@ -21,7 +21,7 @@ ADMIN_PRIVATE_KEY=$(grep Private "$WALLET_DIR/${admin_name}.keys" | head -1 | cu
 ADMIN_PUBLIC_KEY=$(grep Public "$WALLET_DIR/${admin_name}.keys" | head -1 | cut -d: -f2 | sed 's/ //g')
 cleos wallet import --name admin-test-network-wallet --private-key $ADMIN_PRIVATE_KEY
 
-cleos --url $ENDPOINT_ONE system newaccount eosio ${admin_name:?} ${ADMIN_PUBLIC_KEY:?} --stake-net "50 EOS" --stake-cpu "500 EOS" --buy-ram "100 EOS"
+cleos --url $ENDPOINT_ONE system newaccount eosio ${admin_name:?} ${ADMIN_PUBLIC_KEY:?} --stake-net "50 EOS" --stake-cpu "500 EOS" --buy-ram "1 EOS"
 # get some spending money
 cleos --url $ENDPOINT_ONE transfer eosio ${admin_name} "1000 EOS" "init funding"
 # self stake some net and cpu
@@ -40,7 +40,7 @@ do
     cleos wallet import --name dev-test-network-wallet --private-key $PRIVATE_KEY
 
     # 1550 staked per producer 
-    cleos --url $ENDPOINT_ONE system newaccount eosio ${producer_name:?} ${PUBLIC_KEY:?} --stake-net "50 EOS" --stake-cpu "500 EOS" --buy-ram "100 EOS"
+    cleos --url $ENDPOINT_ONE system newaccount eosio ${producer_name:?} ${PUBLIC_KEY:?} --stake-net "50 EOS" --stake-cpu "500 EOS" --buy-ram "1 EOS"
     # get some spending money
     cleos --url $ENDPOINT_ONE transfer eosio ${producer_name} "1000 EOS" "init funding"
     # self stake some net and cpu
@@ -66,7 +66,7 @@ for user_name in usera userb userc userd usere userf userg userh useri userj \
    userv userw userx usery userz
 do
   # create user account
-  cleos --url $ENDPOINT_ONE system newaccount eosio ${user_name:?} ${USER_PUBLIC_KEY:?} --stake-net "50 EOS" --stake-cpu "50 EOS" --buy-ram "100 EOS"
+  cleos --url $ENDPOINT_ONE ${user_name:?} ${USER_PUBLIC_KEY:?} --stake-net "50 EOS" --stake-cpu "50 EOS" --buy-ram "1 EOS"
   # get some spending money
   cleos --url $ENDPOINT_ONE transfer eosio ${user_name} "65423000 EOS" "init funding"
   # stake 65,423,000 EOS x26 accounts = 1,700,998,000 EOS Total Staked 80.99% of 2.1B total funds

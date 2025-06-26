@@ -92,6 +92,5 @@ cleos --url $ENDPOINT push action eosio init '["0", "4,EOS"]' -p eosio@active
 cleos --url $ENDPOINT push action eosio setpriv '["eosio.msig", 1]' -p eosio@active
 sleep 1
 # little test that everything has been setup correctly
-cleos --url $ENDPOINT system buyram eosio eosio "1000 EOS"
- 
+cleos --url $ENDPOINT system buyram eosio eosio "5 EOS"
 
