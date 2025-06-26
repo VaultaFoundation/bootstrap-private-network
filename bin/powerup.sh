@@ -13,7 +13,7 @@ cleos --url $ENDPOINT push action eosio.token transfer \
 # needed for powerup
 cleos --url $ENDPOINT system buyram eosio eosio.reserv "5 EOS"
 # self stake some net and cpu
-cleos --url $ENDPOINT_ONE system delegatebw eosio.reserv eosio.reserv "40.0 EOS" "40.0 EOS"
+cleos --url $ENDPOINT system delegatebw eosio.reserv eosio.reserv "40.0 EOS" "40.0 EOS"
 
 # future by 300 seconds 
 TARGET=$(date -d "300 seconds" +%FT%T.%3N)
