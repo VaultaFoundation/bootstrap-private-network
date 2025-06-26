@@ -63,7 +63,9 @@ do
     fi
     PRODUCER_GROUP_FILE="${WALLET_DIR:?}/GROUP_${GROUP_NAME}.producers"
     if [[ ! -f "$PRODUCER_GROUP_FILE" ]]; then
-        touch "$PRODUCER_GROUP_FILE"
+        # only write one producer the first producer for the group
+        # will be used later to start nodeos
+        printf " --producer-name $producer_name " > "$PRODUCER_GROUP_FILE"
     fi
     
     # head because we want the first match; they may be multiple keys
@@ -88,8 +90,6 @@ do
     "$SCRIPT_DIR"/register_bls_finalizer_key.sh "$ENDPOINT_ONE" \
               "${producer_name}" "$BLS_PUB_KEY" "$BLS_PROOF_POS"
 
-    # Accumulate producers
-    printf " --producer-name $producer_name " >> "$PRODUCER_GROUP_FILE"
     # Accumulate signatures used later in nodeos setup
     printf " --signature-provider ${PUBLIC_KEY}=KEY:${PRIVATE_KEY} " >> "$SIG_GROUP_FILE"
     printf " --signature-provider ${BLS_PUB_KEY}=KEY:${BLS_PRV_KEY} " >> "$SIG_GROUP_FILE"
