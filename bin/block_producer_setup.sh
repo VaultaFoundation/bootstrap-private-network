@@ -45,6 +45,17 @@ switch_groups() {
     fi
 }
 
+odd_even_groups() {
+    case "$GROUP_NAME" in
+        "ONE")
+            GROUP_NAME="TWO";;
+        "TWO")
+            GROUP_NAME="ONE";;
+        *)
+            GROUP_NAME="ONE";;
+    esac
+}
+
 
 # extra added to put remainders in first grouping
 NUMBER_OF_KEYS_PER_GROUP=$(( (NUM_PRODUCERS + DIVISOR - 1) / DIVISOR ))
@@ -84,18 +95,23 @@ do
     BLS_PUB_KEY=$(grep Public "${WALLET_DIR:?}"/"${producer_name}.finalizer.key" | cut -d: -f2 | sed 's/ //g')
     BLS_PRV_KEY=$(grep Private "${WALLET_DIR:?}"/"${producer_name}.finalizer.key" | cut -d: -f2 | sed 's/ //g')
     BLS_PROOF_POS=$(grep Possession "${WALLET_DIR:?}"/"${producer_name}.finalizer.key" | cut -d: -f2 | sed 's/ //g')
+    
     # on chain registration 
     "$SCRIPT_DIR"/register_bls_finalizer_key.sh "$ENDPOINT_ONE" \
               "${producer_name}" "$BLS_PUB_KEY" "$BLS_PROOF_POS"
 
     # Accumulate producer names will be used later to start nodeos
-    printf " --producer-name $producer_name " > "$PRODUCER_GROUP_FILE"
+    printf " --producer-name $producer_name " >> "$PRODUCER_GROUP_FILE"
     # Accumulate signatures used later in nodeos setup
     printf " --signature-provider ${PUBLIC_KEY}=KEY:${PRIVATE_KEY} " >> "$SIG_GROUP_FILE"
     printf " --signature-provider ${BLS_PUB_KEY}=KEY:${BLS_PRV_KEY} " >> "$SIG_GROUP_FILE"
 
     # updates GROUP_NAME
-    switch_groups
+    if [ "$SPLIT" == "HALVES" ]; then
+        odd_even_groups
+    else
+        switch_groups
+    fi
 
     # exit after num producers reached 
     ((producer_created++))
