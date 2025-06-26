@@ -57,7 +57,13 @@ cat > $HOME/eosio_required_auth.json << EOF
     }
   ],
   "accounts": [
-  {"permission":{"actor":"admin.vaulta","weight": ${THRESHOLD}}},
+    {
+      "permission": {
+          "actor":"admin.vaulta",
+          "permission": "active"
+      },
+      "weight": ${THRESHOLD}
+    },
   ${producer_accounts}
   ],
   "waits": []
