@@ -21,11 +21,9 @@ ADMIN_PRIVATE_KEY=$(grep Private "$WALLET_DIR/${admin_name}.keys" | head -1 | cu
 ADMIN_PUBLIC_KEY=$(grep Public "$WALLET_DIR/${admin_name}.keys" | head -1 | cut -d: -f2 | sed 's/ //g')
 cleos wallet import --name admin-test-network-wallet --private-key $ADMIN_PRIVATE_KEY
 
-cleos --url $ENDPOINT_ONE system newaccount eosio ${admin_name:?} ${ADMIN_PUBLIC_KEY:?} --stake-net "50 EOS" --stake-cpu "500 EOS" --buy-ram "1 EOS"
+cleos --url $ENDPOINT_ONE system newaccount eosio ${admin_name:?} ${ADMIN_PUBLIC_KEY:?} --stake-net "5000 EOS" --stake-cpu "5000 EOS" --buy-ram "10 EOS"
 # get some spending money
 cleos --url $ENDPOINT_ONE transfer eosio ${admin_name} "1000 EOS" "init funding"
-# self stake some net and cpu
-cleos --url $ENDPOINT_ONE system delegatebw ${admin_name} ${admin_name} "400.0 EOS" "400.0 EOS"
 
 
 # create producers error out if vars not set
@@ -40,7 +38,7 @@ do
     cleos wallet import --name dev-test-network-wallet --private-key $PRIVATE_KEY
 
     # 1550 staked per producer 
-    cleos --url $ENDPOINT_ONE system newaccount eosio ${producer_name:?} ${PUBLIC_KEY:?} --stake-net "50 EOS" --stake-cpu "500 EOS" --buy-ram "1 EOS"
+    cleos --url $ENDPOINT_ONE system newaccount eosio ${producer_name:?} ${PUBLIC_KEY:?} --stake-net "5000 EOS" --stake-cpu "5000 EOS" --buy-ram "100 EOS"
     # get some spending money
     cleos --url $ENDPOINT_ONE transfer eosio ${producer_name} "1000 EOS" "init funding"
     # self stake some net and cpu

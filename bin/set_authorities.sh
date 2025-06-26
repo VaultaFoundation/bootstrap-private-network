@@ -76,11 +76,11 @@ rm $HOME/eosio_required_auth.json
 # keep our access by key 
 cat > $HOME/vaulta_required_auth.json << EOF
 {
-  "threshold": 15,
+  "threshold": ${THRESHOLD},
   "keys": [
     {
       "key": "${VAULTA_PUBLIC_KEY}",
-      "weight": 15
+      "weight": ${THRESHOLD}
     }
   ],
   "accounts": [
