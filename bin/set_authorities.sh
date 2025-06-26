@@ -84,8 +84,14 @@ cat > $HOME/vaulta_required_auth.json << EOF
     }
   ],
   "accounts": [
-     {"permission":{"actor":"admin.vaulta","weight":15}},
-     ${producer_accounts}
+    {
+      "permission": {
+          "actor":"admin.vaulta",
+          "permission": "active"
+      },
+      "weight": ${THRESHOLD}
+    },
+  ${producer_accounts}
   ],
   "waits": []
 }
