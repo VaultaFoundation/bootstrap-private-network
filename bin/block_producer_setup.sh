@@ -45,17 +45,6 @@ switch_groups() {
     fi
 }
 
-odd_even_groups() {
-    case "$GROUP_NAME" in
-        "ONE")
-            GROUP_NAME="TWO";;
-        "TWO")
-            GROUP_NAME="ONE";;
-        *)
-            GROUP_NAME="ONE";;
-    esac
-}
-
 
 # extra added to put remainders in first grouping
 NUMBER_OF_KEYS_PER_GROUP=$(( (NUM_PRODUCERS + DIVISOR - 1) / DIVISOR ))
@@ -106,12 +95,7 @@ do
     printf " --signature-provider ${PUBLIC_KEY}=KEY:${PRIVATE_KEY} " >> "$SIG_GROUP_FILE"
     printf " --signature-provider ${BLS_PUB_KEY}=KEY:${BLS_PRV_KEY} " >> "$SIG_GROUP_FILE"
 
-    # updates GROUP_NAME
-    if [ "$SPLIT" == "HALVES" ]; then
-        odd_even_groups
-    else
-        switch_groups
-    fi
+    switch_groups
 
     # exit after num producers reached 
     ((producer_created++))
