@@ -263,7 +263,7 @@ start_func() {
   if [[ "$COMMAND" == "CREATE" || "$COMMAND" == "CREATE-TESTNET" ]]
   then
     echo "Activating SAVANNA Consensus "
-    "$SCRIPT_DIR"/open_wallet.sh "$WALLET_DIR"
+    "$SCRIPT_DIR"/open_wallet.sh "$WALLET_DIR" root
     cleos --url $ENDPOINT push action eosio switchtosvnn '{}' -p eosio
     
     echo "please wait for transition to Savanna consensus"
