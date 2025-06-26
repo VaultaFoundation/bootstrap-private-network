@@ -84,7 +84,7 @@ start_func() {
   EOS_ROOT_PUBLIC_KEY=$(grep Public "${WALLET_DIR}"/root-test-network.keys | head -1 | cut -d: -f2 | sed 's/ //g')
 
   # create initialize genesis file; create directories; copy cofigs into place
-  if [ "$COMMAND" == "CREATE"  ]; then
+  if [[ "$COMMAND" == "CREATE" || "$COMMAND" == "CREATE-TESTNET" ]]; then
     NOW=$(date +%FT%T.%3N)
     sed "s/\"initial_key\": \".*\",/\"initial_key\": \"${EOS_ROOT_PUBLIC_KEY}\",/" $GENESIS_FILE > /tmp/genesis.json
     sed "s/\"initial_timestamp\": \".*\",/\"initial_timestamp\": \"${NOW}\",/" /tmp/genesis.json > ${ROOT_DIR}/genesis.json
@@ -311,7 +311,7 @@ if [ "$COMMAND" == "CLEAN" ]; then
     done
 fi
 
-if [ "$COMMAND" == "CREATE" ] || [ "$COMMAND" == "START" ]; then
+if [[ "$COMMAND" == "CREATE" || "$COMMAND" == "CREATE-TESTNET" ||  "$COMMAND" == "START" ]]; then
   start_func $COMMAND
 fi
 
