@@ -16,8 +16,6 @@ chmod 777 /bigata1/savanna/nodeos-one
 chmod 777 /bigata1/savanna/nodeos-two
 chmod 777 /bigata1/savanna/nodeos-three
 
-echo 'root:${1:-Docker!}' | chpasswd
-
 # Create user enfuser if not exists
 if ! id -u enfuser >/dev/null 2>&1; then
     useradd -ms /bin/bash enfuser

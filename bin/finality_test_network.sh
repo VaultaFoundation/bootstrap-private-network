@@ -65,7 +65,7 @@ start_func() {
   
   if [ "$COMMAND" == "CREATE-TESTNET" ]; then
     NUM_PRODUCERS=21
-    SPLIT="THIRDS"
+    SPLIT="HALVES"
   fi
 
   check_used_space
