@@ -3,11 +3,18 @@
 sudo apt update
 sudo apt install nginx certbot python3-certbot-nginx
 
+
+sudo -u enfuser mkdir -p /home/enfuser/www/html/testnet-1
+cd /local/VaultaFoundation/repos/bootstrap-private-network/nginx
+
 for site in testnet testnet-1 api.testnet-1 p2p.testnet-1
 do
-	cp sites-available/${site}.vaulta.com /etc/nginx/sites-available/${site}.vaulta.com
+	sudo cp sites-available/${site}.vaulta.com /etc/nginx/sites-available/${site}.vaulta.com
 	sudo ln -s /etc/nginx/sites-available/${site}.vaulta.com /etc/nginx/sites-enabled/
 done
+
+sudo -u enfuser cp html/landing/index.html /home/enfuser/www/html/
+sudo -u enfuser cp html/testnet/index.html /home/enfuser/www/html/testnet-1/
 
 LANDING_DOMAIN=testnet.valuta.com
 LANDING_TESTNET_1=testnet-1.vaulta.com
