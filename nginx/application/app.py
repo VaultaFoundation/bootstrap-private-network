@@ -11,7 +11,29 @@ def hello():
 def create_keys():
     try:
         result = subprocess.run(
-            ['/home/enfuser/scripts/create_keys.sh'],
+            ['cleos','create','key','--to-console'],
+            capture_output=True, text=True, check=True
+        )
+        return jsonify({'output': result.stdout})
+    except subprocess.CalledProcessError as e:
+        return jsonify({'error': e.stderr}), 500
+        
+@app.route('/service/nodeos_version')
+def nodeos_version():
+    try:
+        result = subprocess.run(
+            ['nodeos','--full-version'],
+            capture_output=True, text=True, check=True
+        )
+        return jsonify({'output': result.stdout})
+    except subprocess.CalledProcessError as e:
+        return jsonify({'error': e.stderr}), 500
+        
+@app.route('/service/cdt_version')
+def cdt_version():
+    try:
+        result = subprocess.run(
+            ['cdt-cpp','--version'],
             capture_output=True, text=True, check=True
         )
         return jsonify({'output': result.stdout})

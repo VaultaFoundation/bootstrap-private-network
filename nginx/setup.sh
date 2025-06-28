@@ -44,6 +44,14 @@ if [[ $? == 0 ]]; then
 else
     exit 1
 fi
-# python code for flask app
-pip install flask gunicorn
-# later gunicorn --bind 127.0.0.1:5000 app:application
+
+sudo -u enfuser << EOF
+	# python code for flask app
+	pip install flask gunicorn
+	which gunicorn
+	if [[ $? != 0 ]]; then 
+		PATH=${PATH}:/home/enfuser/.local/bin; export PATH
+	fi
+	cd /local/VaultaFoundation/repos/bootstrap-private-network/nginx/application
+	nohup gunicorn --bind 127.0.0.1:5000 app:app 2> app.log &
+EOF

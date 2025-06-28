@@ -19,6 +19,15 @@ server {
         proxy_set_header Connection "upgrade";
     }
     
+    # Access the dev-testnet chain
+    location /chain {
+        proxy_pass http://127.0.0.1:8888/v1$uri;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+    
     location / {
         try_files $uri $uri/ =404;
     }

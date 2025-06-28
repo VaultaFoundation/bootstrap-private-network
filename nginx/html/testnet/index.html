@@ -1,27 +1,148 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Key Creator</title>
+    <title>Utilities: TestNet 1</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        #outputModal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            border: 2px solid #888;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        #outputModal textarea {
+            width: 100%;
+            height: 200px;
+            resize: none;
+        }
+        #overlay {
+            display: none;
+            position: fixed;
+            z-index: 900;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            margin: 5px;
+        }
+        .info-box {
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid #ccc;
+            display: inline-block;
+            background-color: #f9f9f9;
+        }
+        .info-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+    </style>
 </head>
 <body>
-    <h1>Vaulta Key Generator</h1>
+
+    <h1>Utilities: TestNet 1</h1>
+    
+    <div class="connection-info">
+        <strong>API:</strong><span id="apiEndpoint">https://api.testnet-1.vaulta.com</span><br>
+        <strong>P2P:</strong><span id="apiEndpoint">https://p2p.testnet-1.vaulta.com</span><br>
+    </div>
+    
+    <br>
+    
+    <div class="info-box">
+        <div class="info-title">Server Info</div>
+        <div><strong>Nodeos Version:</strong> <span id="nodeosVersion">Loading...</span></div>
+        <div><strong>CDT Version:</strong> <span id="cdtVersion">Loading...</span></div>
+        <div><strong>Last Irreversible Block:</strong> <span id="libNum">Loading...</span></div>
+        <div><strong>Head Block Producer:</strong> <span id="headProducer">Loading...</span></div>
+    </div>
+
+    <br>
+    
     <button onclick="createKeys()">Create Keys</button>
 
+    <!-- Modal -->
+    <div id="overlay"></div>
+    <div id="outputModal">
+        <h2>Generated Keys</h2>
+        <textarea id="outputText" readonly></textarea><br><br>
+        <button onclick="copyOutput()">Copy to Clipboard</button>
+        <button onclick="closeModal()">Close</button>
+    </div>
+
     <script>
-        function createKeys() {
-            fetch('/service/create_keys', { method: 'POST' })
+        // On page load fetch versions and chain info
+        window.onload = function() {
+            fetchVersion('/service/cdt_version', 'cdtVersion');
+            fetchChainInfo();
+        }
+
+        // Fetch version for CDT
+        function fetchVersion(endpoint, elementId) {
+            fetch(endpoint)
                 .then(response => response.json())
                 .then(data => {
                     if (data.output) {
-                        alert("Output:\n" + data.output);
+                        document.getElementById(elementId).innerText = data.output.trim();
                     } else {
-                        alert("Error:\n" + (data.error || "Unknown error"));
+                        document.getElementById(elementId).innerText = 'Error fetching';
                     }
                 })
                 .catch(error => {
-                    alert("Error calling server: " + error);
+                    document.getElementById(elementId).innerText = 'Error';
+                    console.error('Error fetching version:', error);
                 });
         }
+
+        // Fetch blockchain info from the public API
+        function fetchChainInfo() {
+            fetch('/chain/get_info')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('nodeosVersion').innerText = data.server_full_version_string || 'Unknown';
+                    document.getElementById('libNum').innerText = data.last_irreversible_block_num || 'Unknown';
+                    document.getElementById('headProducer').innerText = data.head_block_producer || 'Unknown';
+                })
+                .catch(error => {
+                    document.getElementById('nodeosVersion').innerText = 'Error';
+                    document.getElementById('libNum').innerText = 'Error';
+                    document.getElementById('headProducer').innerText = 'Error';
+                    console.error('Error fetching chain info:', error);
+                });
+        }
+
+        function showModal(text) {
+            document.getElementById('outputText').value = text;
+            document.getElementById('outputModal').style.display = 'block';
+            document.getElementById('overlay').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('outputModal').style.display = 'none';
+            document.getElementById('overlay').style.display = 'none';
+        }
+
+        function copyOutput() {
+            const textarea = document.getElementById('outputText');
+            textarea.select();
+            textarea.setSelectionRange(0, 99999); // For mobile
+            document.execCommand('copy');
+            alert('Copied to clipboard!');
+        }
     </script>
+
 </body>
 </html>
