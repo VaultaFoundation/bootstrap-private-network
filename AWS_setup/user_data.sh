@@ -56,8 +56,8 @@ fi
 
 ## gecos non-interactive ##
 adduser "${USER}" --disabled-password --gecos ""
-sudo -u "${USER}" -- sh -c "mkdir /home/enf-replay/.ssh && chmod 700 /home/enf-replay/.ssh && touch /home/enf-replay/.ssh/authorized_keys && chmod 600 /home/enf-replay/.ssh/authorized_keys"
-echo "$PUBLIC_KEY" | sudo -u "${USER}" tee -a /home/enf-replay/.ssh/authorized_keys
+sudo -u "${USER}" -- sh -c "mkdir /home/${USER}/.ssh && chmod 700 /home/${USER}/.ssh && touch /home/${USER}/.ssh/authorized_keys && chmod 600 /home/${USER}/.ssh/authorized_keys"
+echo "$PUBLIC_KEY" | sudo -u "${USER}" tee -a /home/${USER}/.ssh/authorized_keys
 
 ## setup data device ##
 echo "setting up ext4 /dev/xvdb volume"
