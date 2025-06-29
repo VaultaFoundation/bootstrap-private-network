@@ -47,7 +47,7 @@ fi
 
 sudo -u enfuser << EOF
 	# python code for flask app
-	pip install flask gunicorn
+	pip install flask gunicorn flask-limiter
 	which gunicorn
 	if [[ $? != 0 ]]; then 
 		PATH=${PATH}:/home/enfuser/.local/bin; export PATH

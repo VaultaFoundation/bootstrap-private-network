@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Utilities: TestNet 1</title>
+    <title>Vaulta Key Creator</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -19,8 +19,8 @@
             box-shadow: 0 4px 8px rgba(0,0,0,0.2);
         }
         #outputModal textarea {
-            width: 100%;
-            height: 200px;
+            width: 37em;
+            height: 5em;
             resize: none;
         }
         #overlay {
@@ -45,6 +45,9 @@
             display: inline-block;
             background-color: #f9f9f9;
         }
+        .box-width {
+            width: 40em;
+        }
         .info-title {
             font-weight: bold;
             margin-bottom: 5px;
@@ -53,16 +56,17 @@
 </head>
 <body>
 
-    <h1>Utilities: TestNet 1</h1>
+    <h1>Vaulta Testnet Utility</h1>
     
-    <div class="connection-info">
-        <strong>API:</strong><span id="apiEndpoint">https://api.testnet-1.vaulta.com</span><br>
-        <strong>P2P:</strong><span id="apiEndpoint">https://p2p.testnet-1.vaulta.com</span><br>
+    <div class="info-box box-width">
+        <div class="info-title">Access</div>
+        <div><strong>API:</strong> <span id="apiEndpoint">https://api.testnet-1.vaulta.com</span></div>
+        <div><strong>P2P:</strong> <span id="p2pEndpoint">https://p2p.testnet-1.vaulta.com</span></div>
     </div>
     
     <br>
-    
-    <div class="info-box">
+
+    <div class="info-box box-width">
         <div class="info-title">Server Info</div>
         <div><strong>Nodeos Version:</strong> <span id="nodeosVersion">Loading...</span></div>
         <div><strong>CDT Version:</strong> <span id="cdtVersion">Loading...</span></div>
@@ -71,7 +75,7 @@
     </div>
 
     <br>
-    
+
     <button onclick="createKeys()">Create Keys</button>
 
     <!-- Modal -->
@@ -121,6 +125,36 @@
                     document.getElementById('libNum').innerText = 'Error';
                     document.getElementById('headProducer').innerText = 'Error';
                     console.error('Error fetching chain info:', error);
+                });
+        }
+
+        function createKeys() {
+            fetch('/service/create_keys', { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.output) {
+                        showModal(data.output);
+                    } else {
+                        showModal("Error:\n" + (data.error || "Unknown error"));
+                    }
+                })
+                .catch(error => {
+                    showModal("Error calling server: " + error);
+                });
+        }
+        
+        function createAccount() {
+            fetch('/service/create_account', { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.output) {
+                        showModal(data.output);
+                    } else {
+                        showModal("Error:\n" + (data.error || "Unknown error"));
+                    }
+                })
+                .catch(error => {
+                    showModal("Error calling server: " + error);
                 });
         }
 
