@@ -50,4 +50,15 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
     };
+    
+    document.getElementById('getHelloBtn').onclick = () => {
+        const username = prompt('Enter username to send tokens:');
+        if (username) {
+            ModalOutputModule.fetchAndDisplay('/service/hello', '10em', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ userName: username })
+            });
+        }
+    };
 });
