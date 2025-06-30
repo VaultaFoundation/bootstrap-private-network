@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('getPowerUpBtn').onclick = () => {
         const username = prompt('Enter username for power up:');
         if (username) {
-            ModalOutputModule.fetchAndDisplay('/service/powerup', '5em', {
+            ModalOutputModule.postAndDisplay('/service/powerup', '5em', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ userName: username })
@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('getFaucetBtn').onclick = () => {
         const username = prompt('Enter username to send tokens:');
         if (username) {
-            ModalOutputModule.fetchAndDisplay('/service/faucet', '5em', {
+            ModalOutputModule.postAndDisplay('/service/faucet', '5em', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ userName: username })

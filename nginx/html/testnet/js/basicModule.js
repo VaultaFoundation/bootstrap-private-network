@@ -32,7 +32,22 @@ export const ModalOutputModule = {
         alert('Copied to clipboard!');
     },
 
-    fetchAndDisplay(url, modalHeight, options = { method: 'POST' }) {
+    postAndDisplay(url, modalHeight, options = { method: 'POST' }) {
+        fetch(url, options)
+            .then(response => response.json())
+            .then(data => {
+                if (data.output) {
+                    this.showModal(data.output, modalHeight);
+                } else {
+                    const text = JSON.stringify(data, null, 2) || 'Unknown error';
+                    this.showModal("Error:\n" + text);
+                }
+            })
+            .catch(error => {
+                this.showModal("Error calling server: " + error);
+            });
+    }
+    fetchAndDisplay(url, modalHeight, options = { method: 'GET' }) {
         fetch(url, options)
             .then(response => response.json())
             .then(data => {

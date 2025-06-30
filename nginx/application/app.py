@@ -67,7 +67,7 @@ def hello():
         {"output": {"message":"hello from service", "ip": get_remote_address()}}
         ), 200
     
-@app.route('/service/create_keys', methods=['POST'])
+@app.route('/service/create_keys')
 def create_keys():
     logging.info(f"Executing create_keys")
     response, code = run_script(['cleos','create','key','--to-console'])
@@ -138,7 +138,7 @@ def powerup():
     response, code = run_script(["./powerup.sh", user_name])
     return jsonify(response), code
 
-@app.route('/service/get_balance', methods=['POST'])
+@app.route('/service/get_balance')
 def get_balance():
     data = request.json
     user_name = data.get('userName')
@@ -154,7 +154,7 @@ def get_balance():
     response, code = run_script(["./get_balance.sh", user_name])
     return jsonify(response), code
         
-@app.route('/service/get_account', methods=['POST'])
+@app.route('/service/get_account')
 def get_account():
     data = request.json
     user_name = data.get('userName')
