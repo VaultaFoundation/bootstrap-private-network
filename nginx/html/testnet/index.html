@@ -4,6 +4,12 @@
     <meta charset="UTF-8">
     <title>Vaulta Key Creator</title>
     <link rel="stylesheet" href="global.css">
+    <script type="module" src="js/createUserModal.js"></script>
+    <script type="module">
+        import { initVersionInfo } from './js/serverInfo.js';
+        window.addEventListener('DOMContentLoaded', initVersionInfo);
+    </script>
+    <script type="module" src="main.js"></script>
 </head>
 <body>
 
@@ -27,11 +33,17 @@
 
     <br>
 
-    <button onclick="createKeys()">Create Keys</button>
-    
+    <button id="createKeysBtn">Create Keys</button>
     <br>
     
     <button id="openModalBtn">Create Account</button>
+    <br>
+    
+    <button id="getBalanceBtn">Get Balances</button>
+    <br>
+    
+    <button id="getAccountBtn">See Account</button>
+    <br>
 
     <!-- Copy Text Modal -->
     <div id="overlayTextBox"></div>
@@ -56,177 +68,6 @@
             <button id="createBtn" disabled>Create</button>
         </div>
     </div>
-
-    <script>
-        // On page load fetch versions and chain info
-        window.onload = function() {
-            fetchVersion('/service/cdt_version', 'cdtVersion');
-            fetchChainInfo();
-        }
-
-        // Fetch version for CDT
-        function fetchVersion(endpoint, elementId) {
-            fetch(endpoint)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.output) {
-                        document.getElementById(elementId).innerText = data.output.trim();
-                    } else {
-                        document.getElementById(elementId).innerText = 'Error fetching';
-                    }
-                })
-                .catch(error => {
-                    document.getElementById(elementId).innerText = 'Error';
-                    console.error('Error fetching version:', error);
-                });
-        }
-
-        // Fetch blockchain info from the public API
-        function fetchChainInfo() {
-            fetch('/chain/get_info')
-                .then(response => response.json())
-                .then(data => {
-                    document.getElementById('nodeosVersion').innerText = data.server_full_version_string || 'Unknown';
-                    document.getElementById('libNum').innerText = data.last_irreversible_block_num || 'Unknown';
-                    document.getElementById('headProducer').innerText = data.head_block_producer || 'Unknown';
-                })
-                .catch(error => {
-                    document.getElementById('nodeosVersion').innerText = 'Error';
-                    document.getElementById('libNum').innerText = 'Error';
-                    document.getElementById('headProducer').innerText = 'Error';
-                    console.error('Error fetching chain info:', error);
-                });
-        }
-
-        function createKeys() {
-            fetch('/service/create_keys', { method: 'POST' })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.output) {
-                        showModal(data.output);
-                    } else {
-                        showModal("Error:\n" + (data.error || "Unknown error"));
-                    }
-                })
-                .catch(error => {
-                    showModal("Error calling server: " + error);
-                });
-        }
-        
-        function createAccount() {
-            fetch('/service/create_account', { method: 'POST' })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.output) {
-                        showModal(data.output);
-                    } else {
-                        showModal("Error:\n" + (data.error || "Unknown error"));
-                    }
-                })
-                .catch(error => {
-                    showModal("Error calling server: " + error);
-                });
-        }
-
-        // PLAIN TEXT BOX MODAL
-        function showModal(text) {
-            document.getElementById('outputText').value = text;
-            document.getElementById('outputTextModal').style.display = 'block';
-            document.getElementById('overlayTextBox').style.display = 'block';
-        }
-
-        function closeModal() {
-            document.getElementById('outputTextModal').style.display = 'none';
-            document.getElementById('overlayTextBox').style.display = 'none';
-        }
-
-        function copyOutput() {
-            const textarea = document.getElementById('outputText');
-            textarea.select();
-            textarea.setSelectionRange(0, 99999); // For mobile
-            document.execCommand('copy');
-            alert('Copied to clipboard!');
-        }
-        // CREATE USERNAE MODAL
-        const openModalBtn = document.getElementById("openModalBtn");
-        const closeModalBtn = document.getElementById("closeModalBtn");
-        const modal = document.getElementById("createAccountModal");
-
-        const usernameInput = document.getElementById("usernameInput");
-        const publicKeyInput = document.getElementById("publicKeyInput");
-        const createBtn = document.getElementById("createBtn");
-
-        const eosRegex = /^[a-z1-5.]{1,12}$/;
-        
-        openModalBtn.onclick = () => {
-            modal.style.display = "block";
-            usernameInput.value = "";
-            publicKeyInput.value = "";
-            createBtn.disabled = true;
-        };
-
-        closeModalBtn.onclick = () => {
-            modal.style.display = "none";
-        };
-
-        window.onclick = (event) => {
-            if (event.target === modal) {
-                modal.style.display = "none";
-            }
-        };
-        
-        function validateCreateUserInputs() {
-            const usernameValid = eosRegex.test(usernameInput.value.trim());
-            const publicKeyPresent = publicKeyInput.value.trim().length > 0;
-
-            createBtn.disabled = !(usernameValid && publicKeyPresent);
-        }
-
-        usernameInput.addEventListener('input', validateCreateUserInputs);
-        publicKeyInput.addEventListener('input', validateCreateUserInputs);
-        
-        createBtn.onclick = () => {
-            const username = usernameInput.value.trim();
-            const publicKey = publicKeyInput.value.trim();
-
-            if (!eosRegex.test(username)) {
-                alert("Invalid username format.");
-                return;
-            }
-
-            if (!publicKey) {
-                alert("Public key is required.");
-                return;
-            }
-
-            fetch('/service/create_account', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({
-                    userName: username,
-                    publicKey: publicKey
-                })
-            })
-            .then(async res => {
-                const isJson = res.headers.get('content-type')?.includes('application/json');
-                const data = isJson ? await res.json() : null;
-
-                if (!res.ok) {
-                    const error = (data && data.error) || res.statusText;
-                    throw new Error(error);
-                }
-
-                return data;
-            })
-            .then(data => {
-                alert("Account creation result:\n" + JSON.stringify(data, null, 2));
-                modal.style.display = "none";
-            })
-            .catch(err => {
-                alert("Error: " + err.message);
-            });
-        };
-    </script>
 
 </body>
 </html>
