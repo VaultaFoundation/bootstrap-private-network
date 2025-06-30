@@ -1,6 +1,7 @@
 from flask import Flask, jsonify, request
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
+from pymemcache.client import base
 from werkzeug.middleware.proxy_fix import ProxyFix
 import logging
 import re
@@ -62,7 +63,7 @@ def health():
 @app.route('/service/hello')
 def hello():
     logging.info(f"Executing hello")
-    return jsonify({"message":"hello from service", "ip": get_remote_address()})
+    return jsonify({"message":"hello from service", "ip": get_remote_address()}), 200
     
 @app.route('/service/create_keys', methods=['POST'])
 def create_keys():

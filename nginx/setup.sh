@@ -46,7 +46,7 @@ else
 fi
 
 # INSTALL MEMCACH for FLASK RATE LIMITING
-# sudo vi /etc/memcached.conf chance to 1Mb cache
+# sudo vi /etc/memcached.conf chance to 8Mb cache
 sudo systemctl enable memcached
 sudo systemctl start memcached
 echo "stats settings" | nc localhost 11211
