@@ -46,7 +46,8 @@ export const ModalOutputModule = {
             .catch(error => {
                 this.showModal("Error calling server: " + error);
             });
-    }
+    },
+    
     fetchAndDisplay(url, modalHeight, options = { method: 'GET' }) {
         fetch(url, options)
             .then(response => response.json())
