@@ -12,8 +12,9 @@ export const ModalOutputModule = {
         document.getElementById('copyOutputBtn').onclick = () => this.copyOutput();
     },
 
-    showModal(text) {
+    showModal(text, height = '5em') {
         this.outputText.value = text;
+        this.outputText.style.height = height;
         this.outputTextModal.style.display = 'block';
         this.overlayTextBox.style.display = 'block';
     },
@@ -31,12 +32,12 @@ export const ModalOutputModule = {
         alert('Copied to clipboard!');
     },
 
-    fetchAndDisplay(url, options = { method: 'POST' }) {
+    fetchAndDisplay(url, modalHeight, options = { method: 'POST' }) {
         fetch(url, options)
             .then(response => response.json())
             .then(data => {
                 if (data.output) {
-                    this.showModal(data.output);
+                    this.showModal(data.output, modalHeight);
                 } else {
                     const text = JSON.stringify(data, null, 2) || 'Unknown error';
                     this.showModal("Error:\n" + text);
