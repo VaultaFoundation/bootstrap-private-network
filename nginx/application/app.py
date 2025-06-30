@@ -138,7 +138,7 @@ def powerup():
     response, code = run_script(["./powerup.sh", user_name])
     return jsonify(response), code
 
-@app.route('/service/get_balance')
+@app.route('/service/get_balance', methods=['POST'])
 def get_balance():
     data = request.json
     user_name = data.get('userName')
@@ -154,7 +154,7 @@ def get_balance():
     response, code = run_script(["./get_balance.sh", user_name])
     return jsonify(response), code
         
-@app.route('/service/get_account')
+@app.route('/service/get_account', methods=['POST'])
 def get_account():
     data = request.json
     user_name = data.get('userName')
