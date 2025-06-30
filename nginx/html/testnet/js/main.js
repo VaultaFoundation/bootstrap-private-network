@@ -1,4 +1,4 @@
-import { ModalOutputModule } from './modal-output.js';
+import { ModalOutputModule } from './basicModule.js';
 
 document.addEventListener('DOMContentLoaded', () => {
     ModalOutputModule.init();

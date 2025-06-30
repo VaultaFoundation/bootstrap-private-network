@@ -9,7 +9,7 @@
         import { initVersionInfo } from './js/serverInfo.js';
         window.addEventListener('DOMContentLoaded', initVersionInfo);
     </script>
-    <script type="module" src="main.js"></script>
+    <script type="module" src="js/main.js"></script>
 </head>
 <body>
 
@@ -50,8 +50,8 @@
     <div id="outputTextModal" class="modal">
         <h2>Generated Keys</h2>
         <textarea id="outputText" readonly></textarea><br><br>
-        <button onclick="copyOutput()">Copy to Clipboard</button>
-        <button onclick="closeModal()">Close</button>
+        <button id="copyOutputBtn">Copy to Clipboard</button>
+        <button id="closeOutputBtn">Close</button>
     </div>
     <!-- Create USER Modal -->
     <div id="createAccountModal" class="modal">
