@@ -62,7 +62,7 @@ def health():
 @app.route('/service/hello')
 def hello():
     logging.info(f"Executing hello")
-    jsonify({"message":"hello from service", "ip": get_remote_address()})
+    return jsonify({"message":"hello from service", "ip": get_remote_address()})
     
 @app.route('/service/create_keys', methods=['POST'])
 def create_keys():
