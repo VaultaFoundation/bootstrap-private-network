@@ -2,7 +2,7 @@
 
 sudo apt update
 sudo apt install nginx certbot python3-certbot-nginx
-
+sudo apt install memcached libmemcached-tools
 
 sudo -u enfuser mkdir -p /home/enfuser/www/html/testnet-1
 cd /local/VaultaFoundation/repos/bootstrap-private-network/nginx
@@ -45,13 +45,19 @@ else
     exit 1
 fi
 
+# INSTALL MEMCACH for FLASK RATE LIMITING
+# sudo vi /etc/memcached.conf chance to 1Mb cache
+sudo systemctl enable memcached
+sudo systemctl start memcached
+echo "stats settings" | nc localhost 11211
+
 sudo -u enfuser << EOF
 	# python code for flask app
-	pip install flask gunicorn flask-limiter
+	pip install flask gunicorn flask-limiter pymemcache
 	which gunicorn
 	if [[ $? != 0 ]]; then 
 		PATH=${PATH}:/home/enfuser/.local/bin; export PATH
 	fi
 	cd /local/VaultaFoundation/repos/bootstrap-private-network/nginx/application
-	nohup gunicorn --bind 127.0.0.1:5000 app:app 2> app.log &
+	nohup gunicorn --bind 127.0.0.1:5000 app:app 2> app.error.log &
 EOF

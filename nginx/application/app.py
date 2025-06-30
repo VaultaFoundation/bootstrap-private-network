@@ -8,6 +8,9 @@ import subprocess
 
 logging.basicConfig(level=logging.INFO)
 
+# Create Memcached client
+memcached_client = base.Client(('localhost', 11211))
+
 app = Flask(__name__, static_url_path='/service/static')
 
 # use x-forward proxy headers to get client details 
@@ -18,6 +21,7 @@ app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1)
 ######
 limiter = Limiter(
     get_remote_address,  # Default IP-based
+    storage_uri="memcached://localhost:11211",
     app=app,
     default_limits=["100 per hour"]
 )
