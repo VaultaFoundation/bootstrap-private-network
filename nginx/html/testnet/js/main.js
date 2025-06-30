@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const username = prompt('Enter username for balance:');
         if (username) {
             ModalOutputModule.fetchAndDisplay('/service/get_balance', '5em', {
-                method: 'POST',
+                method: 'GET',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ userName: username })
             });
@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const username = prompt('Enter username for account info:');
         if (username) {
             ModalOutputModule.fetchAndDisplay('/service/get_account', '75em', {
-                method: 'POST',
+                method: 'GET',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ userName: username })
             });
@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('getPowerUpBtn').onclick = () => {
         const username = prompt('Enter username for power up:');
         if (username) {
-            ModalOutputModule.postAndDisplay('/service/powerup', '5em', {
+            ModalOutputModule.fetchAndDisplay('/service/powerup', '5em', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ userName: username })
@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('getFaucetBtn').onclick = () => {
         const username = prompt('Enter username to send tokens:');
         if (username) {
-            ModalOutputModule.postAndDisplay('/service/faucet', '5em', {
+            ModalOutputModule.fetchAndDisplay('/service/faucet', '5em', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ userName: username })
