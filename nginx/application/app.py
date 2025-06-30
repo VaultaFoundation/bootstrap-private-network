@@ -63,7 +63,9 @@ def health():
 @app.route('/service/hello')
 def hello():
     logging.info(f"Executing hello")
-    return jsonify({"message":"hello from service", "ip": get_remote_address()}), 200
+    return jsonify(
+        {"output": {"message":"hello from service", "ip": get_remote_address()}}
+        ), 200
     
 @app.route('/service/create_keys', methods=['POST'])
 def create_keys():
@@ -102,6 +104,7 @@ def create_account():
 
 @app.route('/service/faucet', methods=['POST'])
 @limiter.limit("2 per day", key_func=user_name_key, error_message="Faucet limit exceeded. Max 2 requests per day per user.")
+@limiter.limit("100 per hour")  # IP-based limit (manual restore of IP limit)
 def faucet():
     data = request.json
     user_name = data.get('userName')
@@ -119,6 +122,7 @@ def faucet():
 
 @app.route('/service/powerup', methods=['POST'])
 @limiter.limit("1 per 16 hours", key_func=user_name_key, error_message="Faucet limit exceeded. Max 1 request every 16 hours per user.")
+@limiter.limit("100 per hour")  # IP-based limit (manual restore of IP limit)
 def powerup():
     data = request.json
     user_name = data.get('userName')
