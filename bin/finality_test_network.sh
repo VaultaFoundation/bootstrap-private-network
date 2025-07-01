@@ -326,4 +326,13 @@ if [ "$COMMAND" == "BACKUP" ]; then
   done
 fi
 
+if [ "$COMMAND" == "READONLY" ]; then 
+    nodeos --genesis-json ${ROOT_DIR}/genesis.json --agent-name "Spring 2.0 TestNet Read Only" \
+      --http-server-address 0.0.0.0:5888 \
+      --config "$ROOT_DIR"/api-config.ini \
+      --data-dir "$ROOT_DIR"/nodeos-four/data \
+      --p2p-peer-address 127.0.0.1:1444 \
+      --p2p-peer-address 127.0.0.1:2444 > $LOG_DIR/nodeos-four.log 2>&1 &
+fi
+
 echo "COMPLETED COMMAND ${COMMAND}"
