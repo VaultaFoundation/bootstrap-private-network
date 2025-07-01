@@ -3,7 +3,7 @@ set -euo pipefail
 
 # Config
 LOG_DIR="/bigata1/log"
-S3_BUCKET="s3://testnet-backups/testnet-1/logs"
+S3_BUCKET="s3://testnet-backups/testnet-1/logs/"
 TIMESTAMP=$(date +%Y-%m-%d-%H)
 ARCHIVE_PATH="/bigata1/log-${TIMESTAMP}.tar.zst"
 
@@ -17,7 +17,7 @@ done
 
 # Compress logs
 echo "Compressing logs in $LOG_DIR to $ARCHIVE_PATH ..."
-tar -I zstd -cvf "$ARCHIVE_PATH" -C "$LOG_DIR" .
+tar --warning=no-file-changed -I zstd -cvf "$ARCHIVE_PATH" -C "$LOG_DIR" .
 
 echo "Compression complete."
 
