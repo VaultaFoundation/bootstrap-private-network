@@ -28,6 +28,10 @@ server {
         proxy_set_header X-Forwarded-Proto $scheme;
     }
     
+    location /genesis.json {
+        add_header Content-Disposition "attachment; filename=testnet-1-genesis.json";
+    }
+    
     location / {
         try_files $uri $uri/ =404;
     }

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-SOURCE_DIR="/bigata1/savanna/nodeos-three/data/blocks"
+SOURCE_DIR="/bigata1/savanna/nodeos-two/data/blocks"
 S3_BUCKET="s3://testnet-backups/testnet-1/blocks/"
 
 # Check for required commands

@@ -1,6 +1,5 @@
 upstream p2pbackend {
-    server 127.0.0.1:1444;
-    server 127.0.0.1:2444;
+    server 127.0.0.1:3444;
 }
 
 server {
