@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-set -euo pipefail
 
 # Config
 LOG_DIR="/bigata1/log"
@@ -20,6 +19,7 @@ echo "Compressing logs in $LOG_DIR to $ARCHIVE_PATH ..."
 tar --warning=no-file-changed -I zstd -cvf "$ARCHIVE_PATH" -C "$LOG_DIR" .
 
 echo "Compression complete."
+set -euo pipefail
 
 # Upload to S3
 echo "Uploading $ARCHIVE_PATH to $S3_BUCKET ..."
