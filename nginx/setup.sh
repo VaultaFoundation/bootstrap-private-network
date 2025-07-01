@@ -7,7 +7,7 @@ sudo apt install memcached libmemcached-tools
 sudo -u enfuser mkdir -p /home/enfuser/www/html/testnet-1
 cd /local/VaultaFoundation/repos/bootstrap-private-network/nginx
 
-for site in testnet testnet-1 api.testnet-1 p2p.testnet-1 unicove
+for site in testnet testnet-1 api.testnet-1 unicove
 do
 	sudo cp sites-available/${site}.vaulta.com /etc/nginx/sites-available/${site}.vaulta.com
 	sudo ln -s /etc/nginx/sites-available/${site}.vaulta.com /etc/nginx/sites-enabled/
@@ -19,13 +19,12 @@ sudo -u enfuser cp html/testnet/index.html /home/enfuser/www/html/testnet-1/
 LANDING_DOMAIN=testnet.vaulta.com
 LANDING_TESTNET_1=testnet-1.vaulta.com
 API_TESTNET_1=api.testnet-1.vaulta.com
-P2P_TESTNET_1=p2p.testnet-1.vaulta.com
 UNICOVE_TESTNET_1=unicove.testnet-1.vaulta.com
 
 # OPEN FIREWALL PORT 80 and 443
 # Check your DNS even just a landing page is ok
 # NO cert just HTTP
-for domain in $LANDING_DOMAIN $LANDING_TESTNET_1 $API_TESTNET_1 $P2P_TESTNET_1 $UNICOVE_TESTNET_1
+for domain in $LANDING_DOMAIN $LANDING_TESTNET_1 $API_TESTNET_1 $UNICOVE_TESTNET_1
 do
 	curl -s http://${domain} 1>/dev/null
 	if [ $? != 0 ]; then 
@@ -34,7 +33,7 @@ do
 	fi
 done
 
-sudo certbot --nginx -d $LANDING_DOMAIN -d $LANDING_TESTNET_1 -d $API_TESTNET_1 -d $P2P_TESTNET_1 -d $UNICOVE_TESTNET_1
+sudo certbot --nginx -d $LANDING_DOMAIN -d $LANDING_TESTNET_1 -d $API_TESTNET_1 -d $UNICOVE_TESTNET_1
 sudo certbot renew --dry-run
 
 # CLOSE PORT 80
