@@ -12,8 +12,8 @@ for cmd in zstd aws; do
   fi
 done
 
-# Find matching files
-FILES=$(find "$SOURCE_DIR" -maxdepth 1 -type f \( -name "blocks*.log" -o -name "blocks*.index" \))
+# Find matching files: blocks-<number>-<number>.log or .index
+FILES=$(find "$SOURCE_DIR" -maxdepth 1 -type f | grep -E 'blocks-[0-9]+-[0-9]+\.(log|index)$' || true)
 
 if [[ -z "$FILES" ]]; then
   echo "No matching files found in $SOURCE_DIR"
@@ -24,7 +24,7 @@ echo "Found files:"
 echo "$FILES"
 echo ""
 
-# Compress and upload each file
+# Process each file
 for FILE in $FILES; do
   BASENAME=$(basename "$FILE")
   COMPRESSED_FILE="${FILE}.zst"
@@ -34,8 +34,8 @@ for FILE in $FILES; do
 
   echo "Uploading $COMPRESSED_FILE to $S3_BUCKET"
   if aws s3 cp "$COMPRESSED_FILE" "$S3_BUCKET"; then
-    echo "Upload successful, removing $COMPRESSED_FILE"
-    rm "$COMPRESSED_FILE"
+    echo "Upload successful. Removing original file: $FILE"
+    rm "$FILE"
   else
     echo "Upload failed for $COMPRESSED_FILE"
     exit 1
@@ -44,4 +44,4 @@ for FILE in $FILES; do
   echo ""
 done
 
-echo "All files compressed and uploaded successfully."
+echo "All matching files compressed, uploaded, and originals removed."
