@@ -144,6 +144,7 @@ start_func() {
     # create accounts, activate protocols, create tokens, set system contracts
     sleep 1
     "$SCRIPT_DIR"/boot_actions.sh "$ENDPOINT" "$CONTRACT_DIR" "$EOS_ROOT_PUBLIC_KEY"
+    "$SCRIPT_DIR"/system_account_permissions.sh "$ENDPOINT" "$WALLET_DIR"
     sleep 1
     "$SCRIPT_DIR"/initalize_A_tokens.sh "$ENDPOINT" "$VALUTA_CONTRACT_DIR" "$WALLET_DIR" "$SCRIPT_DIR"
     "$SCRIPT_DIR"/add_time_func.sh "$ENDPOINT" 
