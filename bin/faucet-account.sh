@@ -8,10 +8,10 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 
 # create faucet account 
 faucet_account="spout.vaulta"
-[ ! -s "$WALLET_DIR/${admin_name}.keys" ] && cleos create key --to-console > "$WALLET_DIR/${admin_name}.keys"
+[ ! -s "$WALLET_DIR/${faucet_account}.keys" ] && cleos create key --to-console > "$WALLET_DIR/${faucet_account}.keys"
 # head because we want the first match; they may be multiple keys
-ADMIN_PRIVATE_KEY=$(grep Private "$WALLET_DIR/${admin_name}.keys" | head -1 | cut -d: -f2 | sed 's/ //g')
-ADMIN_PUBLIC_KEY=$(grep Public "$WALLET_DIR/${admin_name}.keys" | head -1 | cut -d: -f2 | sed 's/ //g')
+ADMIN_PRIVATE_KEY=$(grep Private "$WALLET_DIR/${faucet_account}.keys" | head -1 | cut -d: -f2 | sed 's/ //g')
+ADMIN_PUBLIC_KEY=$(grep Public "$WALLET_DIR/${faucet_account}.keys" | head -1 | cut -d: -f2 | sed 's/ //g')
 cleos wallet import --name admin-test-network-wallet --private-key $ADMIN_PRIVATE_KEY
 
 cleos --url $ENDPOINT_ONE system newaccount eosio ${faucet_account:?} ${ADMIN_PUBLIC_KEY:?} --stake-net "50 EOS" --stake-cpu "500 EOS" --buy-ram "10 EOS"
