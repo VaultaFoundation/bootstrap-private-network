@@ -2,6 +2,7 @@
 
 ENDPOINT=$1
 WALLET_DIR=$2
+CONTRACT_DIR=$3
 
 # Make sure wallet is open 
 "$SCRIPT_DIR"/open_wallet.sh "$WALLET_DIR" root

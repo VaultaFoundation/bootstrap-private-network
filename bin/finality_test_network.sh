@@ -162,7 +162,7 @@ start_func() {
     "$SCRIPT_DIR"/noop_contract.sh "$ENDPOINT" "$WALLET_DIR" "$SCRIPT_DIR"
     # faucet funding
     "$SCRIPT_DIR"/faucet-account.sh "$ENDPOINT" "$WALLET_DIR"
-    "$SCRIPT_DIR"/powerup.sh "$ENDPOINT" "$WALLET_DIR"
+    "$SCRIPT_DIR"/powerup.sh "$ENDPOINT" "$WALLET_DIR" "$CONTRACT_DIR"
     sleep 1
     # update active permisions for eosio and core.vaulta account
     "$SCRIPT_DIR"/set_authorities.sh "$ENDPOINT" "$SCRIPT_DIR" "$WALLET_DIR" $NUM_PRODUCERS

@@ -7,17 +7,17 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 "${SCRIPT_DIR}"/open_wallet.sh "$WALLET_DIR" admin
 
 # create faucet account 
-admin_name="spout.vaulta"
+faucet_account="spout.vaulta"
 [ ! -s "$WALLET_DIR/${admin_name}.keys" ] && cleos create key --to-console > "$WALLET_DIR/${admin_name}.keys"
 # head because we want the first match; they may be multiple keys
 ADMIN_PRIVATE_KEY=$(grep Private "$WALLET_DIR/${admin_name}.keys" | head -1 | cut -d: -f2 | sed 's/ //g')
 ADMIN_PUBLIC_KEY=$(grep Public "$WALLET_DIR/${admin_name}.keys" | head -1 | cut -d: -f2 | sed 's/ //g')
 cleos wallet import --name admin-test-network-wallet --private-key $ADMIN_PRIVATE_KEY
 
-cleos --url $ENDPOINT_ONE system newaccount eosio ${admin_name:?} ${ADMIN_PUBLIC_KEY:?} --stake-net "50 EOS" --stake-cpu "500 EOS" --buy-ram "10 EOS"
+cleos --url $ENDPOINT_ONE system newaccount eosio ${faucet_account:?} ${ADMIN_PUBLIC_KEY:?} --stake-net "50 EOS" --stake-cpu "500 EOS" --buy-ram "10 EOS"
 # get some spending money
-cleos --url $ENDPOINT_ONE transfer eosio ${admin_name} "200000000 EOS" "faucet funding"
+cleos --url $ENDPOINT_ONE transfer eosio ${faucet_account} "200000000 EOS" "faucet funding"
 # self stake some net and cpu
-cleos --url $ENDPOINT_ONE system delegatebw ${admin_name} ${admin_name} "4000.0 EOS" "4000.0 EOS"
+cleos --url $ENDPOINT_ONE system delegatebw ${faucet_account} ${faucet_account} "4000.0 EOS" "4000.0 EOS"
 # transfer A tokens
-cleos transfer spout.vaulta core.vaulta "100000000 EOS" "big swap"
+cleos transfer ${faucet_account} core.vaulta "100000000 EOS" "big swap"
