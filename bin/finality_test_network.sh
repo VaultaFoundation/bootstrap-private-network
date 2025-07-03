@@ -25,7 +25,8 @@ VALUTA_CONTRACT_DIR="/local/VaultaFoundation/repos/vaulta-system-contract/build/
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 GENESIS_FILE="/local/VaultaFoundation/repos/bootstrap-private-network/config/genesis.json"
 CONFIG_FILE="/local/VaultaFoundation/repos/bootstrap-private-network/config/config.ini"
-LOGGING_JSON="/local/VaultaFoundation/repos/bootstrap-private-network/config/logging.json"
+API_CONFIG_FILE="/local/VaultaFoundation/repos/bootstrap-private-network/config/api-config.ini"
+LOGGING_JSON="/local/VaultaFoundation/repos/bootstrap-private-network/config/vote-logging.json"
 NUM_PRODUCERS=3
 unset SPLIT
 
@@ -120,8 +121,9 @@ start_func() {
     [ ! -d "$ROOT_DIR"/nodeos-two/data ] && mkdir -p "$ROOT_DIR"/nodeos-two/data
     [ ! -d "$ROOT_DIR"/nodeos-three/data ] && mkdir -p "$ROOT_DIR"/nodeos-three/data
     # setup common config, shared by all nodoes instances
-    cp "${CONFIG_FILE}" ${ROOT_DIR}/config.ini
-    cp "${LOGGING_JSON}" ${ROOT_DIR}/logging.json
+    cp "${CONFIG_FILE}" "${ROOT_DIR}"/config.ini
+    cp "${API_CONFIG_FILE}" "${ROOT_DIR}"/api-config.ini
+    cp "${LOGGING_JSON}" "${ROOT_DIR}"/logging.json
   fi
 
   # setup wallet
@@ -201,7 +203,7 @@ start_func() {
     --config "$ROOT_DIR"/config.ini \
     --data-dir "$ROOT_DIR"/nodeos-one/data \
     --p2p-peer-address 127.0.0.1:2444 \
-    --p2p-peer-address 127.0.0.1:3444 --logconf "$ROOT_DIR"/vote-logging.json > "$LOG_DIR/nodeos-one.log" 2>&1 &
+    --p2p-peer-address 127.0.0.1:3444 --logconf "$ROOT_DIR"/logging.json > "$LOG_DIR/nodeos-one.log" 2>&1 &
 
   # start nodeos two
   echo "please wait while we fire up the second node"
