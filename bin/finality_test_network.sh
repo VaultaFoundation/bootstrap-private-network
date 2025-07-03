@@ -62,7 +62,7 @@ readapi_func() {
   COMMAND=$1
 
   for port in 5888 4888 3888 2888; do
-    if ! cat "$LOG_DIR"/api-node-three.log | grep ${port} >/dev/null; then 
+    if ! grep ${port} "$LOG_DIR"/api-node-three.log >/dev/null; then 
       # found a free port; log the port 
       echo $port >> "$LOG_DIR"/api-node-three.log
       if [[ "$COMMAND" == "CREATE" || "$COMMAND" == "CREATE-TESTNET" ]]; then
@@ -70,7 +70,7 @@ readapi_func() {
           --http-server-address 0.0.0.0:${port} \
           --config "$ROOT_DIR"/api-config.ini \
           --data-dir "$ROOT_DIR"/nodeos-four-${port}/data \
-          --p2p-listen-endpoint 0.0.0.0:3444
+          --p2p-listen-endpoint 0.0.0.0:3444 \
           --p2p-peer-address 127.0.0.1:1444 \
           --p2p-peer-address 127.0.0.1:2444 > "$LOG_DIR"/nodeos-four-${port}.log 2>&1 &
       else
@@ -78,7 +78,7 @@ readapi_func() {
           --http-server-address 0.0.0.0:${port} \
           --config "$ROOT_DIR"/api-config.ini \
           --data-dir "$ROOT_DIR"/nodeos-four-${port}/data \
-          --p2p-listen-endpoint 0.0.0.0:3444
+          --p2p-listen-endpoint 0.0.0.0:3444 \
           --p2p-peer-address 127.0.0.1:1444 \
           --p2p-peer-address 127.0.0.1:2444 > "$LOG_DIR"/nodeos-four-${port}.log 2>&1 &
       fi
@@ -311,7 +311,7 @@ start_func() {
         readapi_func $COMMAND
       fi
   fi
-  
+
   echo "waiting for production network to sync up..."
   sleep 18
   
