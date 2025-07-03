@@ -6,6 +6,9 @@ WALLET_DIR=$2
 # Make sure wallet is open 
 "$SCRIPT_DIR"/open_wallet.sh "$WALLET_DIR" root
 
+# set contract for eosio.reserv
+cleos --url $ENDPOINT set contract eosio.reserv "$CONTRACT_DIR"/eosio.system/.powerup/ powup.results.wasm powup.results.abi
+
 # transfer funds over
 cleos --url $ENDPOINT push action eosio.token transfer \
   '{"to":"eosio.reserv","from":"spout.vaulta","quantity":"100.0000 EOS","memo":"funds for powerup"}' \

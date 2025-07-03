@@ -57,6 +57,33 @@ check_used_space() {
   fi
 }
 
+readapi_func() {
+  COMMAND=$1
+
+  for port in 5888 4888 3888 2888; do
+    if ! lsof -i :$port >/dev/null; then
+      # found a free port; log the port 
+      echo $port >> "$LOG_DIR"/api-node-three.log
+      if [[ "$COMMAND" == "CREATE" || "$COMMAND" == "CREATE-TESTNET" ]]; then
+        nodeos --genesis-json ${ROOT_DIR}/genesis.json --agent-name "Spring 2.0 TestNet Read Only" \
+          --http-server-address 0.0.0.0:${port} \
+          --config "$ROOT_DIR"/api-config.ini \
+          --data-dir "$ROOT_DIR"/nodeos-four-${port}/data \
+          --p2p-peer-address 127.0.0.1:1444 \
+          --p2p-peer-address 127.0.0.1:2444 > "$LOG_DIR"/nodeos-four-${port}.log 2>&1 &
+      else
+        nodeos --agent-name "Spring 2.0 TestNet Read Only" \
+          --http-server-address 0.0.0.0:${port} \
+          --config "$ROOT_DIR"/api-config.ini \
+          --data-dir "$ROOT_DIR"/nodeos-four-${port}/data \
+          --p2p-peer-address 127.0.0.1:1444 \
+          --p2p-peer-address 127.0.0.1:2444 > "$LOG_DIR"/nodeos-four-${port}.log 2>&1 &
+      fi
+      break
+    fi # end lsof check 
+  done # end port loop
+}
+
 #####
 # START/CREATE Function to startup all nodes
 ####
@@ -121,6 +148,9 @@ start_func() {
     "$SCRIPT_DIR"/initalize_A_tokens.sh "$ENDPOINT" "$VALUTA_CONTRACT_DIR" "$WALLET_DIR" "$SCRIPT_DIR"
     "$SCRIPT_DIR"/add_time_func.sh "$ENDPOINT" 
     sleep 1
+    # initalize REX
+    "$SCRIPT_DIR"/initalize_rex.sh "$ENDPOINT" "$WALLET_DIR"
+    sleep 1
     # create producer and user accounts, stake EOS
     "$SCRIPT_DIR"/create_accounts.sh "$ENDPOINT" "$WALLET_DIR" $NUM_PRODUCERS
     sleep 1
@@ -170,7 +200,7 @@ start_func() {
     --config "$ROOT_DIR"/config.ini \
     --data-dir "$ROOT_DIR"/nodeos-one/data \
     --p2p-peer-address 127.0.0.1:2444 \
-    --p2p-peer-address 127.0.0.1:3444 --logconf "$ROOT_DIR"/logging.json > "$LOG_DIR/nodeos-one.log" 2>&1 &
+    --p2p-peer-address 127.0.0.1:3444 --logconf "$ROOT_DIR"/vote-logging.json > "$LOG_DIR/nodeos-one.log" 2>&1 &
 
   # start nodeos two
   echo "please wait while we fire up the second node"
@@ -214,6 +244,7 @@ start_func() {
       --p2p-peer-address 127.0.0.1:1444 \
       --p2p-peer-address 127.0.0.1:3444 > $LOG_DIR/nodeos-two.log 2>&1 &
   fi
+  
   echo "please wait while we fire up the third node"
   sleep 5
 
@@ -231,8 +262,8 @@ start_func() {
     NODE_THREE_SIGS=$(xargs < "$SIG_GROUP_FILE")
   fi
   
-  # NODEOS COMMAND 
-  if [[ "$COMMAND" == "CREATE" || "$COMMAND" == "CREATE-TESTNET" ]]; then
+  # COMMAND CREATE THREE NODE PRODUCER NETWORK
+  if [[ "$COMMAND" == "CREATE" ]]; then
     nodeos --genesis-json ${ROOT_DIR}/genesis.json --agent-name "Finality Test Node Three" \
       --http-server-address 0.0.0.0:${NODEOS_THREE_PORT} \
       --p2p-listen-endpoint 0.0.0.0:3444 \
@@ -243,17 +274,37 @@ start_func() {
       --data-dir "$ROOT_DIR"/nodeos-three/data \
       --p2p-peer-address 127.0.0.1:1444 \
       --p2p-peer-address 127.0.0.1:2444 > $LOG_DIR/nodeos-three.log 2>&1 &
-  else
-    nodeos --agent-name "Finality Test Node Three" \
-      --http-server-address 0.0.0.0:${NODEOS_THREE_PORT} \
-      --p2p-listen-endpoint 0.0.0.0:3444 \
-      --enable-stale-production \
-      ${NODE_THREE_PRODUCERS} \
-      ${NODE_THREE_SIGS} \
-      --config "$ROOT_DIR"/config.ini \
-      --data-dir "$ROOT_DIR"/nodeos-three/data \
-      --p2p-peer-address 127.0.0.1:1444 \
-      --p2p-peer-address 127.0.0.1:2444 > $LOG_DIR/nodeos-three.log 2>&1 &
+      
+    echo $! > "$LOG_DIR"/create-node-three.log
+  fi 
+  
+  # CREATE-TESTNET TWO NODE PRODUCER NETWORK 
+  # THIRD NODE READONLY
+  if [[ "$COMMAND" == "CREATE-TESTNET" ]]; then
+     readapi_func $COMMAND
+     echo "true" > "$LOG_DIR"/api-node-three.log
+  fi
+  
+  ##
+  # Restarting Node
+  # When the command was create start node-three as producer 
+  # Otherwise start as a read-only api node
+  ##
+  if [[ "$COMMAND" == "START" ]]; then
+      if [ -f $LOG_DIR/create-node-three.log ]; then 
+        nodeos --agent-name "Finality Test Node Three" \
+            --http-server-address 0.0.0.0:${NODEOS_THREE_PORT} \
+            --p2p-listen-endpoint 0.0.0.0:3444 \
+            --enable-stale-production \
+            ${NODE_THREE_PRODUCERS} \
+            ${NODE_THREE_SIGS} \
+            --config "$ROOT_DIR"/config.ini \
+            --data-dir "$ROOT_DIR"/nodeos-three/data \
+            --p2p-peer-address 127.0.0.1:1444 \
+            --p2p-peer-address 127.0.0.1:2444 > $LOG_DIR/nodeos-three.log 2>&1 &
+      else
+        readapi_func $COMMAND
+      fi
   fi
   
   echo "waiting for production network to sync up..."
@@ -281,34 +332,34 @@ if [ "$COMMAND" == "NA" ]; then
 fi
 
 if [ "$COMMAND" == "CLEAN" ]; then
-    for d in nodeos-one nodeos-two nodeos-three; do
+    for d in nodeos-one nodeos-two nodeos-three nodeos-four-5888 nodeos-four-4888 nodeos-four-3888 nodeos-four-2888; do
         [ -f "$ROOT_DIR"/${d}/data/blocks/blocks.log ] && rm -f "$ROOT_DIR"/${d}/data/blocks/blocks.log
         [ -f "$ROOT_DIR"/${d}/data/blocks/blocks.index ] && rm -f "$ROOT_DIR"/${d}/data/blocks/blocks.index
         [ -f "$ROOT_DIR"/${d}/data/state/shared_memory.bin ] && rm -f "$ROOT_DIR"/${d}/data/state/shared_memory.bin
         [ -f "$ROOT_DIR"/${d}/data/state/code_cache.bin ] && rm -f "$ROOT_DIR"/${d}/data/state/code_cache.bin
         [ -f "$ROOT_DIR"/${d}/data/state/chain_head.dat ] && rm -f "$ROOT_DIR"/${d}/data/state/chain_head.dat
         [ -f "$ROOT_DIR"/${d}/data/blocks/reversible/fork_db.dat ] && rm -f "$ROOT_DIR"/${d}/data/blocks/reversible/fork_db.dat
-        [ -f "$LOG_DIR"/registered_bls_keys.txt ] && rm -f "$LOG_DIR"/registered_bls_keys.txt
-        [ -f "$LOG_DIR"/savanna_activated.txt ] && rm -f "$LOG_DIR"/savanna_activated.txt
-        if [[ -f "${WALLET_DIR:?}/GROUP_ONE.producers" ]]; then
-          rm "${WALLET_DIR:?}/GROUP_ONE.producers"
-        fi
-        if [[ -f "${WALLET_DIR:?}/GROUP_ONE.keys" ]]; then
-          rm "${WALLET_DIR:?}/GROUP_ONE.keys"
-        fi
-        if [[ -f "${WALLET_DIR:?}/GROUP_TWO.producers" ]]; then
-          rm "${WALLET_DIR:?}/GROUP_TWO.producers"
-        fi
-        if [[ -f "${WALLET_DIR:?}/GROUP_TWO.keys" ]]; then
-          rm "${WALLET_DIR:?}/GROUP_TWO.keys"
-        fi
-        if [[ -f "${WALLET_DIR:?}/GROUP_THREE.producers" ]]; then
-          rm "${WALLET_DIR:?}/GROUP_THREE.producers"
-        fi
-        if [[ -f "${WALLET_DIR:?}/GROUP_THREE.keys" ]]; then
-          rm "${WALLET_DIR:?}/GROUP_THREE.keys"
-        fi
     done
+    [ -f "$LOG_DIR"/api-node-three.log ] && rm -f "$LOG_DIR"/api-node-three.log
+    [ -f "$LOG_DIR"/create-node-three.log ] && rm -f "$LOG_DIR"/create-node-three.log
+    if [[ -f "${WALLET_DIR:?}/GROUP_ONE.producers" ]]; then
+        rm "${WALLET_DIR:?}/GROUP_ONE.producers"
+    fi
+    if [[ -f "${WALLET_DIR:?}/GROUP_ONE.keys" ]]; then
+        rm "${WALLET_DIR:?}/GROUP_ONE.keys"
+    fi
+    if [[ -f "${WALLET_DIR:?}/GROUP_TWO.producers" ]]; then
+        rm "${WALLET_DIR:?}/GROUP_TWO.producers"
+    fi
+    if [[ -f "${WALLET_DIR:?}/GROUP_TWO.keys" ]]; then
+        rm "${WALLET_DIR:?}/GROUP_TWO.keys"
+    fi
+    if [[ -f "${WALLET_DIR:?}/GROUP_THREE.producers" ]]; then
+        rm "${WALLET_DIR:?}/GROUP_THREE.producers"
+    fi
+    if [[ -f "${WALLET_DIR:?}/GROUP_THREE.keys" ]]; then
+        rm "${WALLET_DIR:?}/GROUP_THREE.keys"
+    fi
 fi
 
 if [[ "$COMMAND" == "CREATE" || "$COMMAND" == "CREATE-TESTNET" ||  "$COMMAND" == "START" ]]; then
@@ -320,19 +371,14 @@ if [ "$COMMAND" == "STOP" ]; then
 fi
 
 if [ "$COMMAND" == "BACKUP" ]; then
-  for loc in "http://127.0.0.1:${NODEOS_ONE_PORT}" "http://127.0.0.1:${NODEOS_TWO_PORT}" "http://127.0.0.1:${NODEOS_THREE_PORT}"
+  for loc in "http://127.0.0.1:${NODEOS_ONE_PORT}" "http://127.0.0.1:${NODEOS_TWO_PORT}"
   do
     $SCRIPT_DIR/do_snapshot.sh $loc
   done
 fi
 
 if [ "$COMMAND" == "READONLY" ]; then 
-    nodeos --genesis-json ${ROOT_DIR}/genesis.json --agent-name "Spring 2.0 TestNet Read Only" \
-      --http-server-address 0.0.0.0:5888 \
-      --config "$ROOT_DIR"/api-config.ini \
-      --data-dir "$ROOT_DIR"/nodeos-four/data \
-      --p2p-peer-address 127.0.0.1:1444 \
-      --p2p-peer-address 127.0.0.1:2444 > $LOG_DIR/nodeos-four.log 2>&1 &
+  readapi_func $COMMAND
 fi
 
 echo "COMPLETED COMMAND ${COMMAND}"

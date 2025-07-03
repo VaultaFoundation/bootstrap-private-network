@@ -93,4 +93,6 @@ cleos --url $ENDPOINT push action eosio setpriv '["eosio.msig", 1]' -p eosio@act
 sleep 1
 # little test that everything has been setup correctly
 cleos --url $ENDPOINT system buyram eosio eosio "500 EOS"
-
+# set contracts for smaller accounts
+cleos --url $ENDPOINT set contract eosio.fees "$CONTRACT_DIR"/eosio.fees/
+cleos --url $ENDPOINT set contract eosio.bpay "$CONTRACT_DIR"/eosio.bpay/
