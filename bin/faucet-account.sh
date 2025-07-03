@@ -16,8 +16,8 @@ cleos wallet import --name admin-test-network-wallet --private-key $ADMIN_PRIVAT
 
 cleos --url $ENDPOINT_ONE system newaccount eosio ${faucet_account:?} ${ADMIN_PUBLIC_KEY:?} --stake-net "50 EOS" --stake-cpu "500 EOS" --buy-ram "10 EOS"
 # get some spending money
-cleos --url $ENDPOINT_ONE transfer eosio ${faucet_account} "200000000 EOS" "faucet funding"
+cleos --url $ENDPOINT_ONE transfer eosio ${faucet_account} "150000000 EOS" "faucet funding"
 # self stake some net and cpu
 cleos --url $ENDPOINT_ONE system delegatebw ${faucet_account} ${faucet_account} "4000.0 EOS" "4000.0 EOS"
 # transfer A tokens
-cleos transfer ${faucet_account} core.vaulta "100000000 EOS" "big swap"
+cleos transfer ${faucet_account} core.vaulta "75000000 EOS" "big swap"
