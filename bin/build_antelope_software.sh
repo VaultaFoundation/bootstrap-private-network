@@ -6,7 +6,7 @@
 # called from Docker Build
 ###
 
-SPRING_GIT_COMMIT_TAG=${1:-release/2.0}
+SPRING_GIT_COMMIT_TAG=${1:-sync_call}
 CDT_GIT_COMMIT_TAG=${2:-sync_call}
 let NPROC=$(nproc)/6
 TUID=$(id -ur)
