@@ -47,7 +47,7 @@ RUN git clone https://github.com/VaultaFoundation/eosio.time
 RUN git clone https://github.com/VaultaFoundation/vaulta-system-contract.git
 WORKDIR /local/VaultaFoundation/repos/bootstrap-private-network
 # Build uses the following
-# SPRING_GIT_COMMIT_TAG=${1:-v2.0.0}
+# SPRING_GIT_COMMIT_TAG=${1:-v2.0.0-dev1}
 # CDT_GIT_COMMIT_TAG=${2:-sync_call}
 RUN /local/VaultaFoundation/repos/bootstrap-private-network/bin/build_antelope_software.sh
 USER root
