@@ -38,6 +38,8 @@ stop_func() {
   for p in $(ps -u $MY_ID | grep nodeos | sed -e 's/^[[:space:]]*//' | cut -d" " -f1); do
     echo $p && kill -15 $p
   done
+  # reset ports for readonly node
+  :> "$LOG_DIR"/api-node-three.log
   echo "waiting for production network to quiesce..."
   sleep 5
 }
