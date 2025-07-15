@@ -1,22 +1,55 @@
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Cleaner default font */
+    background-color: #f5f7fa; /* Soft background */
+    color: #333;
+    margin: 0;
+    padding: 2rem;
+    text-align: center;
+}
+
+h1 {
+    color: #20252d;
+    font-size: 2.5rem;
+}
+
+a {
+    color: #1a73e8;
+    text-decoration: none;
+    word-break: break-word;
+}
+
+a:hover {
+    text-decoration: underline;
 }
 .modal {
     display: none;
     position: fixed;
     z-index: 1000;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    background-color: white;
-    padding: 20px;
-    border: 2px solid #888;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
 }
+
+.modal-content {
+    background-color: #fff;
+    margin: 10% auto;
+    padding: 2rem;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    text-align: left;
+}
+
 .modal textarea {
-    width: 37em;
-    height: 5em;
+    width: 100%;
+    height: 6em;
     resize: none;
+    padding: 0.75rem;
+    font-family: inherit;
 }
 #overlayTextBox {
     display: none;
@@ -38,23 +71,39 @@ body {
     color: black;
 }
 button {
-    padding: 10px 20px;
-    font-size: 16px;
-    margin: 5px;
+    background-color: #1a73e8;
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    margin: 0.5rem;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.3s;
 }
+
+button:hover {
+    background-color: #155ab6;
+}
+
 button:disabled {
     background-color: #ccc;
     cursor: not-allowed;
 }
 .info-box {
-    margin: 10px 0;
-    padding: 10px;
-    border: 1px solid #ccc;
-    display: inline-block;
-    background-color: #f9f9f9;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    padding: 1.5rem;
+    margin: 1rem auto;
+    width: 100%;
+    max-width: 600px;
+    text-align: left;
 }
+
 .box-width {
-    width: 40em;
+    width: 100%;
+    max-width: 600px;
 }
 .info-title {
     font-weight: bold;
@@ -62,11 +111,16 @@ button:disabled {
 }
 label {
     font-weight: bold;
+    display: block;
+    margin-top: 1rem;
 }
 input {
     width: 100%;
-    padding: 6px;
+    padding: 0.75rem;
     margin-top: 4px;
     margin-bottom: 12px;
     box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-family: inherit;
 }

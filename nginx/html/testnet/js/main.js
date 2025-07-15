@@ -18,13 +18,35 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    document.getElementById('getAccountBtn').onclick = () => {
-        const username = prompt('Enter username for account info:');
+    document.getElementById('getBalanceBtn').onclick = () => {
+        const username = prompt('Enter username for balance:');
         if (username) {
-            ModalOutputModule.fetchAndDisplay('/service/get_account', '75em', {
+            ModalOutputModule.fetchAndDisplay('/service/get_balance', 'auto', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ userName: username })
+            }, (data) => {
+                const rows = data.output.rows || [];
+                if (rows.length === 0) return '<p>No balances found.</p>';
+    
+                let html = `<table style="width:100%; border-collapse:collapse; text-align:left;">
+                    <thead>
+                        <tr>
+                            <th style="border-bottom: 1px solid #ccc; padding: 8px;">Balance</th>
+                            <th style="border-bottom: 1px solid #ccc; padding: 8px;">Released</th>
+                        </tr>
+                    </thead>
+                    <tbody>`;
+    
+                rows.forEach(row => {
+                    html += `<tr>
+                        <td style="padding: 8px;">${row.balance || '-'}</td>
+                        <td style="padding: 8px;">${'released' in row ? row.released : '-'}</td>
+                    </tr>`;
+                });
+    
+                html += `</tbody></table>`;
+                return html;
             });
         }
     };

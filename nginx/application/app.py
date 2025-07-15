@@ -3,6 +3,7 @@ from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from pymemcache.client import base
 from werkzeug.middleware.proxy_fix import ProxyFix
+import json
 import logging
 import re
 import subprocess
@@ -35,7 +36,7 @@ def user_name_key():
 ########
 # Common func to run shell scripts
 ########
-def run_script(command_list):
+def run_script(command_list, isResponseJSON = False):
     try:
         result = subprocess.run(
             command_list,
@@ -43,6 +44,15 @@ def run_script(command_list):
             capture_output=True,
             text=True
         )
+        if isResponseJSON:
+            stdout_str = result.stdout.strip()
+            stderr_str = result.stderr.strip()
+        
+            output_response = json.loads(stdout_str) if stdout_str else {}
+            error_response = json.loads(stderr_str) if stderr_str else {}
+        
+            return {"output": output_response, "error": error_response}, 200
+        # not JSON resturn raw
         return {"output": result.stdout.strip(), "error": result.stderr.strip()}, 200
     except subprocess.CalledProcessError as e:
         return {
@@ -150,8 +160,9 @@ def get_balance():
 
     if not is_valid_username(user_name):
         return jsonify({"error": "Invalid userName"}), 400
-        
-    response, code = run_script(["./get_balance.sh", user_name])
+    
+    responseIsJSON = True
+    response, code = run_script(["./get_balance.sh", user_name], responseIsJSON)
     return jsonify(response), code
         
 @app.route('/service/get_account', methods=['POST'])

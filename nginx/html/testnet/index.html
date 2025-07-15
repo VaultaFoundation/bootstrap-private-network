@@ -59,10 +59,14 @@
     <!-- Copy Text Modal -->
     <div id="overlayTextBox"></div>
     <div id="outputTextModal" class="modal">
-        <h2>Generated Keys</h2>
-        <textarea id="outputText" readonly></textarea><br><br>
-        <button id="copyOutputBtn">Copy to Clipboard</button>
-        <button id="closeOutputBtn">Close</button>
+        <div class="modal-content">
+            <h2>Result</h2>
+            <textarea id="outputText" readonly style="display:none;"></textarea>
+            <div id="htmlContentBox" style="display:none;"></div>
+            <br>
+            <button id="copyOutputBtn">Copy to Clipboard</button>
+            <button id="closeOutputBtn">Close</button>
+        </div>
     </div>
     <!-- Create USER Modal -->
     <div id="createAccountModal" class="modal">

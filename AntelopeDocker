@@ -42,7 +42,7 @@ WORKDIR /local/VaultaFoundation/repos
 RUN git clone -b sync_call https://github.com/AntelopeIO/spring.git
 RUN git clone -b call_abi https://github.com/AntelopeIO/cdt.git
 RUN git clone https://github.com/VaultaFoundation/system-contracts.git
-RUN git clone --single-branch https://github.com/VaultaFoundation/bootstrap-private-network.git
+RUN git clone https://github.com/VaultaFoundation/bootstrap-private-network.git
 RUN git clone https://github.com/VaultaFoundation/eosio.time
 RUN git clone https://github.com/VaultaFoundation/vaulta-system-contract.git
 WORKDIR /local/VaultaFoundation/repos/bootstrap-private-network
