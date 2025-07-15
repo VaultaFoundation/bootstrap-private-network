@@ -51,6 +51,17 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
     
+    document.getElementById('getAccountBtn').onclick = () => {
+        const username = prompt('Enter username for account info:');
+        if (username) {
+            ModalOutputModule.fetchAndDisplay('/service/get_account', '75em', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ userName: username })
+            });
+        }
+    };
+    
     document.getElementById('getPowerUpBtn').onclick = () => {
         const username = prompt('Enter username for power up:');
         if (username) {

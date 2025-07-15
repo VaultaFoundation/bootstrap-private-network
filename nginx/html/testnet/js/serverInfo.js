@@ -18,11 +18,13 @@ export function fetchChainInfo() {
             document.getElementById('nodeosVersion').innerText = data.server_full_version_string || 'Unknown';
             document.getElementById('libNum').innerText = data.last_irreversible_block_num || 'Unknown';
             document.getElementById('headProducer').innerText = data.head_block_producer || 'Unknown';
+            document.getElementById('chainId').innerText = data.chain_id || 'Unknown';
         })
         .catch(error => {
             document.getElementById('nodeosVersion').innerText = 'Error';
             document.getElementById('libNum').innerText = 'Error';
             document.getElementById('headProducer').innerText = 'Error';
+            document.getElementById('chainId').innerText = 'Error';
             console.error('Error fetching chain info:', error);
         });
 }
