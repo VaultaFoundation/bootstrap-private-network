@@ -46,24 +46,30 @@ export const ModalOutputModule = {
     
     fetchAndDisplay(url, modalHeight = '5em', options = { method: 'GET' }, parser = null) {
         fetch(url, options)
-            .then(response => response.json())
-            .then(data => {
+            .then(async response => {
+                if (response.status === 429) {
+                    this.showModal("Too Many Requests, please wait 24 hours before making a new request", modalHeight);
+                    return;
+                }
+    
+                const data = await response.json();
+    
                 if (parser) {
                     try {
                         const html = parser(data);
                         this.showHTMLModal(html);
                     } catch (e) {
-                        this.showModal("Error parsing response:\n" + e.message);
+                        this.showModal("Error parsing response:\n" + e.message, modalHeight);
                     }
                 } else if (data.output) {
                     this.showModal(data.output, modalHeight);
                 } else {
                     const text = JSON.stringify(data, null, 2) || 'Unknown error';
-                    this.showModal("Error:\n" + text);
+                    this.showModal("Error:\n" + text, modalHeight);
                 }
             })
             .catch(error => {
-                this.showModal("Error calling server: " + error);
+                this.showModal("Error calling server: " + error, modalHeight);
             });
     }
 };

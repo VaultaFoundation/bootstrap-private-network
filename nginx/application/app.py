@@ -74,7 +74,7 @@ def health():
 def hello():
     logging.info(f"Executing hello")
     return jsonify(
-        {"output": f"hello from service ip: {get_remote_address()}"}
+        {"output": f"Hi there! Your IP address is {get_remote_address()}. This may be helpful in resolving access issues like mistaken bans."}
         ), 200
     
 @app.route('/service/create_keys')
