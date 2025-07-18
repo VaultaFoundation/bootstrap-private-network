@@ -112,6 +112,24 @@ def create_account():
     response, code = run_script(["./create_account.sh", user_name, public_key])
     return jsonify(response), code
 
+@app.route('/service/buyram', methods=['POST'])
+@limiter.limit("5 per day", key_func=user_name_key, error_message="Faucet limit exceeded. Max 2 requests per day per user.")
+@limiter.limit("100 per hour")  # IP-based limit (manual restore of IP limit)
+def buyram():
+    data = request.json
+    user_name = data.get('userName')
+
+    if not user_name:
+        return jsonify({"error": "Missing userName"}), 400
+
+    logging.info(f"Executing buyram for user: {user_name} ")
+
+    if not is_valid_username(user_name):
+        return jsonify({"error": "Invalid userName"}), 400
+
+    response, code = run_script(["./buyram.sh", user_name])
+    return jsonify(response), code
+
 @app.route('/service/faucet', methods=['POST'])
 @limiter.limit("2 per day", key_func=user_name_key, error_message="Faucet limit exceeded. Max 2 requests per day per user.")
 @limiter.limit("100 per hour")  # IP-based limit (manual restore of IP limit)

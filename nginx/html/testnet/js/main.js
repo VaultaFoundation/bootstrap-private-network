@@ -83,6 +83,17 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
     };
+
+    document.getElementById('buyRamBtn').onclick = () => {
+        const username = prompt('Enter username to buy RAM for:');
+        if (username) {
+            ModalOutputModule.fetchAndDisplay('/service/buyram', '5em', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ userName: username })
+            });
+        }
+    };
     
     document.getElementById('getHelloBtn').onclick = () => {
         ModalOutputModule.fetchAndDisplay('/service/hello', '10em');
