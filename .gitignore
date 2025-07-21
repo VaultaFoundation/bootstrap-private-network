@@ -1,1 +1,6 @@
 .idea
+contracts/noopcontract/noopcontract.abi
+contracts/noopcontract/noopcontract.wasm
+__pycache__
+app.error.log
+nohup.out
