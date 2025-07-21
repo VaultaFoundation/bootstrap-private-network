@@ -30,7 +30,7 @@ if ! echo "$APP_ORIGINAL_CKSUM" | sha256sum --check --status; then
     "$ROOT_DIR/nginx/application/restart-app.sh"
 fi
 
-echo "Completed Flash Application Updates: Step 2 of 3"
+echo "Completed Flask Application Updates: Step 2 of 3"
 
 # Deploy HTML/CSS/JS assets
 install -Dm644 "$ROOT_DIR/nginx/html/favicon.ico" "$WWW_DIR/favicon.ico"
@@ -43,4 +43,4 @@ install -Dm644 "$ROOT_DIR/nginx/html/testnet/index.html" "$WWW_DIR/testnet-1/ind
 cp -r "$ROOT_DIR/nginx/html/testnet/js" "$WWW_DIR/testnet-1/"
 
 echo "Completed install of html, css and js: Step 3 of 3"
-echo "Finished\n\n"
+printf "Finished\n\n"
