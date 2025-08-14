@@ -7,9 +7,9 @@ set -x
 # establish directories
 ROOT_DIR="/bigata1/savanna"
 LOG_DIR="/bigata1/log"
-SNAPSHOT_DIR="${ROOT_DIR}"/nodeos-one/data/snapshots/
+SNAPSHOT_DIR="${ROOT_DIR}"/nodeos-one/data/snapshots
 WALLET_DIR=${HOME}/eosio-wallet
-S3_SNAPSHOTS=s3://testnet-backups/testnet-1/snapshots
+S3_SNAPSHOTS=s3://testnet-backups/testnet-1/snapshots/
 
 # Nodeos Information
 # config information
@@ -22,12 +22,14 @@ NODE_TWO_SIGS=$(xargs < "${WALLET_DIR}"/GROUP_TWO.keys)
 NODEOS_ONE_STATE_DIR="${ROOT_DIR}"/nodeos-one/data/state/
 NODEOS_TWO_STATE_DIR="${ROOT_DIR}"/nodeos-two/data/state/
 port=5888
+NODEOS_FOUR_STATE_DIR="${ROOT_DIR}"/nodeos-four-${port}/data/state/
 
 # get Snapshot 
 cd "$SNAPSHOT_DIR" || exit
 LAST_SNAP=$(aws s3 ls "$S3_SNAPSHOTS" | awk '{print $4}' | tail -1)
-aws s3 cp "${S3_SNAPSHOTS}/${LAST_SNAP}/" .
-zstd -d "$LAST_SNAP"
+rm -f "${LAST_SNAP}"
+aws s3 cp "${S3_SNAPSHOTS}${LAST_SNAP}" .
+zstd -df "$LAST_SNAP"
 
 if [[ "$NODEOS" == "ONE" ]]; then
 cd $ROOT_DIR || exit
@@ -65,7 +67,7 @@ fi
 if [[ "$NODEOS" == "FOUR" ]]; then
 cd $ROOT_DIR || exit
 # clean state
-find "${NODEOS_TWO_STATE_DIR}" -mindepth 1 -delete
+find "${NODEOS_FOUR_STATE_DIR}" -mindepth 1 -delete
 nohup nodeos --snapshot $SNAPSHOT_DIR/"${LAST_SNAP%.*}" \
 	--agent-name "Spring 2.0 TestNet Read Only" \
 	--http-server-address 0.0.0.0:${port} \
