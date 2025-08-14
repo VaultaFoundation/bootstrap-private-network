@@ -2,12 +2,14 @@
 
 NODEOS=${1:-NONE}
 
+set -x
+
 # establish directories
 ROOT_DIR="/bigata1/savanna"
 LOG_DIR="/bigata1/log"
 SNAPSHOT_DIR="${ROOT_DIR}"/nodeos-one/data/snapshots/
 WALLET_DIR=${HOME}/eosio-wallet
-S3_SNAPSHOTS=s3://testnet-backups/testnet-1/snapshots/
+S3_SNAPSHOTS=s3://testnet-backups/testnet-1/snapshots
 
 # Nodeos Information
 # config information
