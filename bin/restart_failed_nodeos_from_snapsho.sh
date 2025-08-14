@@ -26,7 +26,7 @@ port=5888
 # get Snapshot 
 cd "$SNAPSHOT_DIR" || exit
 LAST_SNAP=$(aws s3 ls "$S3_SNAPSHOTS" | awk '{print $4}' | tail -1)
-aws s3 cp "${S3_SNAPSHOTS}/${LAST_SNAP}" .
+aws s3 cp "${S3_SNAPSHOTS}/${LAST_SNAP}/" .
 zstd -d "$LAST_SNAP"
 
 if [[ "$NODEOS" == "ONE" ]]; then
