@@ -1,7 +1,7 @@
 [
     {
         "actionName": "insertperson",
-        "actionAuthAcct": "caller",
+        "actionAuthAcct": "userd",
         "actionData": {},
         "authorization": {
             "actor": "userd",
