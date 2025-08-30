@@ -1,0 +1,13 @@
+[
+    {
+        "actionName": "basictest",
+        "actionAuthAcct": "userd",
+        "actionData": {
+            "input": "15"
+	},
+        "authorization": {
+            "actor": "userd",
+            "permission": "active"
+        }
+    }
+]

@@ -1,0 +1,11 @@
+[
+    {
+        "actionName": "insertperson",
+        "actionAuthAcct": "caller",
+        "actionData": {},
+        "authorization": {
+            "actor": "userd",
+            "permission": "active"
+        }
+    }
+]
