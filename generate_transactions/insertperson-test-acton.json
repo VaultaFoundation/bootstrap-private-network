@@ -1,6 +1,6 @@
 [
     {
-        "actionName": "insertperson",
+        "actionName": "getperson",
         "actionAuthAcct": "userd",
         "actionData": {},
         "authorization": {
